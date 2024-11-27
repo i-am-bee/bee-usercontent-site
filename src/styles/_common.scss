@@ -1,0 +1,13 @@
+@forward "@carbon/styles/scss/config" with (
+  // carbon specifies invalid font-display value 'swap', this fixes it
+  $font-display: swap
+);
+@forward "theme";
+@forward "@carbon/styles/scss/type";
+@forward "@carbon/styles/scss/fonts";
+@forward "@carbon/styles/scss/spacing";
+@forward "@carbon/styles/scss/colors" as color-*;
+@forward "@carbon/styles/scss/utilities/convert";
+@forward "@carbon/styles/scss/motion";
+
+$block-radius: 0.5rem;

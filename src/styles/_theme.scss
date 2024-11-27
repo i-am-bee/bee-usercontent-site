@@ -1,0 +1,173 @@
+/**
+ * Copyright 2024 IBM Corp.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+@use "sass:map";
+@use "@carbon/colors" as *;
+@use "@carbon/themes/scss/themes" as themes;
+@use "@carbon/grid/scss/config" as grid;
+// Hack to prevent CSS variable duplication
+@use "@carbon/react/scss/components/button/tokens" as buttonTokens with (
+  $button-secondary: null
+);
+@use "@carbon/react/scss/components/tag/tokens" as tagTokens with (
+  $tag-background-blue: null,
+  $tag-background-purple: null,
+  $tag-background-cool-gray: null
+);
+
+grid.$grid-breakpoints: map.merge(
+  grid.$grid-breakpoints,
+  (
+    sm: (
+      columns: 4,
+      margin: 1rem,
+      width: 20rem,
+    ),
+  )
+);
+
+themes.$white: map.merge(
+  themes.$white,
+  (
+    border-subtle-00: $cool-gray-20,
+    border-subtle-01: $cool-gray-10,
+
+    overlay: rgba($white, 0.5),
+    background-inverse: $black,
+    layer-hover: $cool-gray-10,
+    layer-01: $white,
+    layer-02: $cool-gray-10,
+    layer-03: $cool-gray-20,
+
+    layer-hover-01: $cool-gray-10,
+    layer-hover-02: $cool-gray-20,
+    layer-hover-03: $cool-gray-30,
+
+    layer-selected-hover-01: $cool-gray-20,
+    layer-selected-hover-02: $cool-gray-30,
+    layer-selected-hover-03: $cool-gray-40,
+
+    layer-accent-01: $cool-gray-10,
+    layer-accent-02: $cool-gray-20,
+    layer-accent-03: $cool-gray-30,
+
+    layer-inverse-01: $cool-gray-90,
+    layer-selected-disabled: $gray-30,
+    text-placeholder: $gray-40,
+    text-dark: $black,
+    text-muted: $cool-gray-40,
+    text-muted-light: $cool-gray-60,
+
+    button-secondary: $black,
+    button-secondary-color: $white,
+    button-secondary-hover: $gray-80-hover,
+    button-secondary-active: $gray-60,
+
+    button-gray: $cool-gray-10,
+    button-gray-hover: $cool-gray-20,
+    button-gray-active: $cool-gray-30,
+
+    button-disabled: $gray-30,
+
+    tag-background-blue: $blue-10,
+    tag-color-blue: $blue-60,
+    tag-background-purple: $purple-10,
+    tag-color-purple: $purple-60,
+    tag-background-cool-gray: $cool-gray-10,
+    tag-color-cool-gray: $cool-gray-70,
+    tag-background-green: $green-10,
+    tag-color-green: $green-50,
+
+    icon-on-color-disabled: $gray-50,
+
+    field-hover-01: $cool-gray-20,
+    field-hover-02: $cool-gray-20,
+    field-hover-03: $cool-gray-20,
+
+    // custom
+    box-shadow-color: rgba(193, 199, 205, 0.45),
+  )
+);
+
+themes.$g90: map.merge(
+  themes.$g90,
+  (
+    border-subtle-00: $cool-gray-80,
+    border-subtle-01: $cool-gray-80,
+
+    background: $cool-gray-90,
+    overlay: rgba($cool-gray-100, 0.5),
+    background-inverse: $white,
+    layer-hover: $cool-gray-80,
+
+    layer-01: $cool-gray-90,
+    layer-02: $cool-gray-80,
+    layer-03: $cool-gray-70,
+
+    layer-accent-01: $cool-gray-90,
+    layer-accent-02: $cool-gray-80,
+    layer-accent-03: $cool-gray-70,
+
+    layer-01-hover: $cool-gray-80,
+    layer-02-hover: $cool-gray-70,
+    layer-03-hover: $cool-gray-60,
+
+    layer-inverse-01: $white,
+    layer-selected-disabled: $gray-70,
+    text-placeholder: $gray-60,
+    text-dark: $white,
+    text-muted: $cool-gray-60,
+    text-muted-light: $cool-gray-30,
+
+    button-secondary: $white,
+    button-secondary-color: $black,
+    button-secondary-hover: $cool-gray-20,
+    button-secondary-active: $cool-gray-30,
+
+    button-gray: $cool-gray-90,
+    button-gray-hover: $cool-gray-80,
+    button-gray-active: $cool-gray-70,
+
+    button-disabled: $gray-70,
+
+    field-hover-01: $cool-gray-80,
+    field-hover-02: $cool-gray-80,
+    field-hover-03: $cool-gray-80,
+
+    tag-background-blue: $blue-10,
+    tag-color-blue: $blue-60,
+    tag-background-purple: $purple-10,
+    tag-color-purple: $purple-60,
+    tag-background-cool-gray: $cool-gray-10,
+    tag-color-cool-gray: $cool-gray-70,
+    tag-background-green: $green-80,
+    tag-color-green: $green-40,
+
+    icon-on-color-disabled: $gray-50,
+
+    // custom
+    box-shadow-color: rgba(0, 0, 0, 0.45),
+  )
+);
+
+$button-secondary: var(--cds-button-secondary);
+$button-secondary-color: var(--cds-button-secondary-color);
+
+$box-shadow-color: var(--cds-box-shadow-color);
+$box-shadow: 0px 2px 8px 0px $box-shadow-color;
+$drop-shadow: 0px 2px 8px $box-shadow-color;
+
+@forward "@carbon/styles/scss/theme";
