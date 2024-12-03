@@ -6,6 +6,9 @@ declare global {
   }
 }
 
+// Page is loaded directly
+if (window === window.parent) window.location.href = 'https://ibm.com';
+
 (() => {
   window.addEventListener('message', async (event) => {
     const { data } = event;

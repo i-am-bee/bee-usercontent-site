@@ -32,7 +32,11 @@ RUN corepack enable pnpm && pnpm run build
 
 FROM nginx:stable-alpine AS runner
 
-COPY --from=builder /app/nginx /etc/nginx/conf.d
+# Can be baked in or defined at runtime
+ARG ALLOWED_FRAME_ANCESTORS="'none'"
+ENV ALLOWED_FRAME_ANCESTORS=${ALLOWED_FRAME_ANCESTORS}
+
+COPY --from=builder /app/nginx /etc/nginx/templates
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 EXPOSE 80
