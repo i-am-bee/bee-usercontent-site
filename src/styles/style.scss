@@ -1,13 +1,13 @@
 @use 'sass:math';
 
-@use "common" as *;
+@use 'common' as *;
 
-@use "@carbon/styles/scss/layer";
-@use "@carbon/styles/scss/layout";
-@use "@carbon/styles/scss/zone";
+@use '@carbon/styles/scss/layer';
+@use '@carbon/styles/scss/layout';
+@use '@carbon/styles/scss/zone';
 
-@use "@carbon/react/scss/components/notification/tokens" as *;
-@use "@carbon/react/scss/components/button/tokens" as *;
+@use '@carbon/react/scss/components/notification/tokens' as *;
+@use '@carbon/react/scss/components/button/tokens' as *;
 @use '@carbon/react/scss/components/tag/tokens' as *;
 
 .element-container:has(iframe[srcdoc*="// This iframe is hidden using CSS. Do not remove this comment."])
@@ -21,7 +21,9 @@
 
 @mixin focus() {
   outline: none;
-  box-shadow: 0 0 0 2px $text-inverse, 0 0 0 4px $focus;
+  box-shadow:
+    0 0 0 2px $text-inverse,
+    0 0 0 4px $focus;
 }
 
 #root {
@@ -36,7 +38,7 @@
     line-height: 1;
     scrollbar-width: thin;
     scrollbar-color: $border-subtle transparent;
-    
+
     &,
     .#{$prefix}--white & {
       color-scheme: light;
@@ -68,13 +70,25 @@
       display: none;
     }
 
+    .stAppViewContainer {
+      padding: $spacing-03;
+      body:not(.fullscreen) & {
+        align-items: center;
+      }
+    }
+
     .stMain {
       padding: $spacing-06;
       background-color: $background;
       box-shadow: $box-shadow;
       border-radius: $spacing-03;
-      margin: $spacing-03;
       overflow-x: hidden;
+      max-inline-size: 100%;
+      max-block-size: 100%;
+      @media (max-width: 768px) {
+        inset: $spacing-03;
+        inline-size: auto;
+      }
     }
 
     .stMainBlockContainer {
@@ -155,7 +169,7 @@
       }
     }
 
-    [data-testid="stHeaderActionElements"] {
+    [data-testid='stHeaderActionElements'] {
       svg {
         stroke: $text-primary;
         &:hover {
@@ -195,7 +209,7 @@
     }
 
     .stAlert {
-      div[role="alert"] {
+      div[role='alert'] {
         border-radius: 0;
         position: relative;
         color: $text-primary;
@@ -204,10 +218,10 @@
         font-size: rem(14px);
         line-height: math.div(18, 14);
       }
-      [data-testid="stAlertContentSuccess"],
-      [data-testid="stAlertContentInfo"],
-      [data-testid="stAlertContentWarning"],
-      [data-testid="stAlertContentError"] {
+      [data-testid='stAlertContentSuccess'],
+      [data-testid='stAlertContentInfo'],
+      [data-testid='stAlertContentWarning'],
+      [data-testid='stAlertContentError'] {
         &::before {
           content: '';
           position: absolute;
@@ -220,53 +234,57 @@
           position: relative;
         }
       }
-      [data-testid="stAlertContentSuccess"] {
+      [data-testid='stAlertContentSuccess'] {
         --alert-border: #{$support-success};
         --alert-background: #{$notification-background-success};
       }
-      [data-testid="stAlertContentInfo"] {
+      [data-testid='stAlertContentInfo'] {
         --alert-border: #{$support-info};
         --alert-background: #{$notification-background-info};
       }
-      [data-testid="stAlertContentWarning"] {
+      [data-testid='stAlertContentWarning'] {
         --alert-border: #{$support-warning};
         --alert-background: #{$notification-background-warning};
       }
-      [data-testid="stAlertContentError"] {
+      [data-testid='stAlertContentError'] {
         --alert-border: #{$support-error};
         --alert-background: #{$notification-background-error};
       }
-      [data-testid="stAlertDynamicIcon"] {
+      [data-testid='stAlertDynamicIcon'] {
         inset-block-start: -1px;
       }
     }
 
     .stButton,
-    .stDownloadButton {
+    .stDownloadButton,
+    .stFormSubmitButton {
       button {
         position: relative;
         padding-block: rem(14px);
         padding-inline: rem(15px) rem(63px);
         border: 1px solid transparent;
         border-radius: $spacing-03;
-        transition: color $duration-fast-02, background-color $duration-fast-02;
+        transition:
+          color $duration-fast-02,
+          background-color $duration-fast-02;
         p {
           font-size: rem(14px);
           line-height: math.div(18, 14);
           letter-spacing: rem(0.16px);
         }
-        > span[color="inherit"] {
+        > span[color='inherit'] {
           position: absolute;
           inset-block-start: 50%;
           inset-inline-end: rem(15px);
           margin: 0;
           transform: translateY(-50%);
         }
-        [data-testid="stIconEmoji"] {
+        [data-testid='stIconEmoji'] {
           margin: 0;
         }
       }
-      button[kind="primary"] {
+      button[kind='primary'],
+      button[kind='primaryFormSubmit'] {
         background-color: $button-primary;
         &,
         &:hover,
@@ -280,7 +298,8 @@
           background-color: $button-primary-active;
         }
       }
-      button[kind="secondary"] {
+      button[kind='secondary'],
+      button[kind='secondaryFormSubmit'] {
         background-color: $button-secondary;
         &,
         &:hover,
@@ -303,8 +322,8 @@
         }
       }
     }
-    
-    [data-testid="stWidgetLabel"] {
+
+    [data-testid='stWidgetLabel'] {
       min-block-size: 0;
       margin-block-end: $spacing-03;
       color: inherit;
@@ -328,10 +347,10 @@
           box-shadow: none;
         }
       }
-      [data-testid="stBaseButton-secondary"] {
+      [data-testid='stBaseButton-secondary'] {
         display: none;
       }
-      [data-testid="stFileUploaderDropzoneInstructions"] {
+      [data-testid='stFileUploaderDropzoneInstructions'] {
         > span:first-child {
           display: none;
         }
@@ -344,7 +363,7 @@
           span {
             font-weight: 600;
             color: $text-primary;
-            margin-bottom: $spacing-03;
+            margin-block-end: $spacing-03;
           }
           small {
             color: $text-secondary;
@@ -361,7 +380,7 @@
       > div:first-child {
         display: none;
       }
-      [data-testid="stFileUploaderDeleteBtn"] {
+      [data-testid='stFileUploaderDeleteBtn'] {
         margin-block: -$spacing-03;
         margin-inline-end: -$spacing-03;
         button {
@@ -388,18 +407,18 @@
       margin-block-end: 0;
     }
 
-    [data-testid="StyledFullScreenButton"] {
+    [data-testid='StyledFullScreenButton'] {
       inline-size: rem(32px);
       block-size: rem(32px);
       inset-block-start: 0;
       inset-inline-end: rem(32px);
-      &[title="Exit fullscreen"] {
+      &[title='Exit fullscreen'] {
         inset-block-start: rem(12px);
         inset-inline-end: rem(12px);
       }
     }
 
-    [data-testid="stVegaLiteChart"] {
+    [data-testid='stVegaLiteChart'] {
       summary {
         inline-size: rem(32px);
         block-size: rem(32px);
@@ -452,13 +471,13 @@
     }
 
     .stRadio {
-      [role="radiogroup"] {
+      [role='radiogroup'] {
         gap: $spacing-03;
       }
     }
 
-    [data-baseweb="radio"] > div:first-child,
-    [data-baseweb="checkbox"] > span:first-child {
+    [data-baseweb='radio'] > div:first-child,
+    [data-baseweb='checkbox'] > span:first-child {
       inline-size: rem(18px);
       block-size: rem(18px);
       margin: 0;
@@ -467,8 +486,8 @@
       transition: none;
     }
 
-    [data-baseweb="radio"],
-    [data-baseweb="checkbox"] {
+    [data-baseweb='radio'],
+    [data-baseweb='checkbox'] {
       > div:last-child {
         color: inherit;
       }
@@ -481,27 +500,27 @@
         font-weight: normal;
       }
 
-      [data-testid="stWidgetLabel"] {
+      [data-testid='stWidgetLabel'] {
         margin-block-end: 0;
       }
     }
 
-    [data-baseweb="radio"]:has(input:checked) > div:first-child,
-    [data-baseweb="checkbox"]:has(input:checked) > span:first-child {
+    [data-baseweb='radio']:has(input:checked) > div:first-child,
+    [data-baseweb='checkbox']:has(input:checked) > span:first-child {
       border-color: $icon-primary;
     }
 
-    [data-baseweb="radio"]:has(input:focus-visible),
-    [data-baseweb="checkbox"]:has(input:focus-visible) {
+    [data-baseweb='radio']:has(input:focus-visible),
+    [data-baseweb='checkbox']:has(input:focus-visible) {
       background-color: transparent;
     }
 
-    [data-baseweb="radio"]:has(input:focus-visible) > div:first-child,
-    [data-baseweb="checkbox"]:has(input:focus-visible) > span:first-child {
+    [data-baseweb='radio']:has(input:focus-visible) > div:first-child,
+    [data-baseweb='checkbox']:has(input:focus-visible) > span:first-child {
       @include focus();
     }
 
-    [data-baseweb="radio"] {
+    [data-baseweb='radio'] {
       > div:first-child > div {
         inline-size: rem(8px);
         block-size: rem(8px);
@@ -515,7 +534,7 @@
       }
     }
 
-    [data-baseweb="checkbox"] > span:first-child {
+    [data-baseweb='checkbox'] > span:first-child {
       border-radius: $spacing-01;
       background: none;
       position: relative;
@@ -535,13 +554,13 @@
       }
     }
 
-    [data-baseweb="checkbox"]:has(input:checked) > span:first-child {
+    [data-baseweb='checkbox']:has(input:checked) > span:first-child {
       background-color: $icon-primary;
     }
 
-    [data-baseweb="base-input"] > input,
-    [data-baseweb="base-input"] > textarea,
-    [data-baseweb="select"] > div {
+    [data-baseweb='base-input'] > input,
+    [data-baseweb='base-input'] > textarea,
+    [data-baseweb='select'] > div {
       border: 1px solid $border-subtle;
       background-color: transparent;
       color: $text-primary;
@@ -554,8 +573,8 @@
       }
     }
 
-    [data-baseweb="base-input"] > input,
-    [data-baseweb="base-input"] > textarea {
+    [data-baseweb='base-input'] > input,
+    [data-baseweb='base-input'] > textarea {
       border-radius: $spacing-03;
       padding: rem(14px) $spacing-05;
       min-block-size: rem(48px);
@@ -564,16 +583,16 @@
       }
     }
 
-    [data-baseweb="input"],
-    [data-baseweb="textarea"],
-    [data-baseweb="base-input"] {
+    [data-baseweb='input'],
+    [data-baseweb='textarea'],
+    [data-baseweb='base-input'] {
       background-color: transparent;
       border: 0;
       border-radius: 0;
       block-size: auto;
     }
 
-    [data-baseweb="select"] > div {
+    [data-baseweb='select'] > div {
       > div {
         padding: rem(10px) rem(16px);
         block-size: rem(46px);
@@ -593,22 +612,23 @@
           font-size: inherit;
           line-height: inherit;
           letter-spacing: inherit;
+          color: inherit;
         }
       }
     }
 
-    [data-testid="stNumberInputContainer"] {
+    [data-testid='stNumberInputContainer'] {
       block-size: auto;
       border: 0;
-      [data-baseweb="base-input"] > input, {
+      [data-baseweb='base-input'] > input {
         border-start-end-radius: 0;
         border-end-end-radius: 0;
         border-inline-end: 0;
       }
     }
 
-    [data-testid="stNumberInputStepDown"],
-    [data-testid="stNumberInputStepUp"] {
+    [data-testid='stNumberInputStepDown'],
+    [data-testid='stNumberInputStepUp'] {
       background-color: $border-subtle;
       color: inherit;
       padding-inline: $spacing-03;
@@ -623,32 +643,43 @@
       }
     }
 
-    [data-testid="InputInstructions"] {
+    [data-testid='InputInstructions'] {
       color: $text-secondary;
       inset-inline-end: $spacing-03;
       inset-block-end: $spacing-02;
     }
   }
 
-  [data-baseweb="popover"] {
+  [data-baseweb='popover'] {
     box-shadow: $box-shadow;
+    > div {
+      background-color: $layer;
+      color: $text-primary;
+    }
   }
 
-  [data-baseweb="menu"],
-  [data-testid="stSelectboxVirtualDropdown"],
-  [data-testid="stSelectboxVirtualDropdownEmpty"] {
+  [data-baseweb='menu'],
+  [data-testid='stSelectboxVirtualDropdown'],
+  [data-testid='stSelectboxVirtualDropdownEmpty'] {
     box-shadow: none;
     font-size: rem(14px);
     line-height: math.div(18, 14);
     letter-spacing: rem(0.16px);
+    background-color: $layer;
     li {
       font-size: inherit;
       line-height: inherit;
       letter-spacing: inherit;
+      color: $text-primary;
+      background-color: $layer;
+      &[aria-selected='true'],
+      &:hover {
+        background-color: $layer-hover;
+      }
     }
   }
 
-  [data-baseweb="tag"] {
+  [data-baseweb='tag'] {
     background-color: $tag-background-blue;
     color: $tag-color-blue;
     border-radius: rem(9px);
