@@ -3,6 +3,7 @@ export default {
     preprocessorOptions: {
       scss: {
         quietDeps: true,
+        silenceDeprecations: ['mixed-decls'],
       },
     },
   },

@@ -19,7 +19,7 @@
 @use "@carbon/themes/scss/themes" as themes;
 @use "@carbon/grid/scss/config" as grid;
 // Hack to prevent CSS variable duplication
-@use "@carbon/react/scss/components/button/tokens" as buttonTokens with (
+@use "@carbon/react/scss/components/button/tokens" as * with (
   $button-secondary: null
 );
 @use "@carbon/react/scss/components/tag/tokens" as tagTokens with (

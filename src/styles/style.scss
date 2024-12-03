@@ -1,12 +1,14 @@
+@use 'sass:math';
+
 @use "common" as *;
 
-// @use '@carbon/styles/scss/reset';
-// @use '@carbon/styles/scss/fonts';
 @use "@carbon/styles/scss/layer";
 @use "@carbon/styles/scss/layout";
 @use "@carbon/styles/scss/zone";
 
-@use "form";
+@use "@carbon/react/scss/components/notification/tokens" as *;
+@use "@carbon/react/scss/components/button/tokens" as *;
+@use '@carbon/react/scss/components/tag/tokens' as *;
 
 .element-container:has(iframe[srcdoc*="// This iframe is hidden using CSS. Do not remove this comment."])
 {
@@ -17,154 +19,615 @@
   display: none;
 }
 
-.stApp {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  font-family: "IBM Plex Sans", "Helvetica Neue", sans-serif;
-  @include font-family(serif);
-  font-size: rem(16px);
-  letter-spacing: 0.16px;
-  line-height: 1.75;
-  background-color: $layer-02 !important;
-  color: $text-primary !important;
-  margin: 0;
-  scrollbar-width: thin;
-  scrollbar-color: var(--cds-border-subtle-00) transparent;
+@mixin focus() {
+  outline: none;
+  box-shadow: 0 0 0 2px $color-white, 0 0 0 4px $focus;
+}
 
-  &::-webkit-scrollbar {
-    inline-size: 1rem;
-    block-size: 1rem;
-  }
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  &::-webkit-scrollbar-thumb {
-    border: solid transparent;
-    border-width: 0.25rem;
-    border-radius: 0.5rem;
-    background: var(--cds-border-subtle-00);
-    background-clip: padding-box;
-  }
-  * {
-    font-family: "IBM Plex Sans", "Helvetica Neue", sans-serif;
-  }
-
-  .stAppViewContainer {
-    overflow-y: auto;
-    padding-block: $spacing-06;
-    display: block;
-  }
-
-  .stMain {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: visible;
-    min-block-size: 100%;
-  }
-
-  .stMainBlockContainer {
-    padding: $spacing-06;
-    background-color: $background;
-    box-shadow: $box-shadow;
-    border-radius: $block-radius;
-  }
-
-  .stHeading {
-    h1 {
-      font-size: rem(20px);
-      line-height: 28 / 20;
-      font-weight: 600;
-      padding: 0;
-      margin-block: 0 $spacing-06;
+#root {
+  .stApp {
+    @include font-family(sans);
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    background-color: $layer-02;
+    color: $text-primary;
+    font-size: rem(16px);
+    line-height: 1;
+    scrollbar-width: thin;
+    scrollbar-color: $border-subtle transparent;
+    
+    &,
+    .#{$prefix}--white & {
+      color-scheme: light;
     }
-  }
-
-  ol,
-  ul,
-  dl {
-    font-size: 0.875rem;
-  }
-
-  a {
-    color: var(--cds-link-primary);
-    text-decoration: none;
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-
-  .stTable {
-    width: 100%;
-    border-collapse: collapse;
-
-    th,
-    td {
-      padding: 0.5rem 1rem;
-      text-align: left;
-      border-bottom: 1px solid var(--cds-border-subtle-01);
-    }
-  }
-
-  .stAlert {
-    > div {
-      border-radius: 0;
-      box-shadow: none;
-    }
-    p {
-      font-size: 0.875rem;
-    }
-  }
-
-  .stFileUploader {
-    [role="button"] {
-      border-radius: 0;
-      background-color: transparent;
-      border: 1px dashed var(--cds-border-strong);
-      padding: 1rem;
+    .#{$prefix}--g90 & {
+      color-scheme: dark;
     }
 
-    [data-testid="stFileUploaderDropzoneInstructions"] > :first-child {
+    * {
+      @include font-family(sans);
+    }
+
+    a {
+      color: $link-primary;
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    button {
+      &:focus {
+        @include focus();
+      }
+    }
+
+    .stAppHeader,
+    .stAppToolbar {
       display: none;
     }
-    [data-testid="stFileUploaderDropzone"] {
-      button {
-        background: transparent;
-        padding-inline: 0.625rem;
 
+    .stMain {
+      padding: $spacing-06;
+      background-color: $background;
+      box-shadow: $box-shadow;
+      border-radius: $spacing-03;
+      margin: $spacing-03;
+      overflow-x: hidden;
+    }
+
+    .stMainBlockContainer {
+      padding: 0;
+      max-inline-size: none;
+    }
+
+    .stHeading,
+    .stMarkdown {
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        padding: 0;
+        scroll-margin-block-start: $spacing-06;
+      }
+      span {
+        scroll-margin-block-start: $spacing-06;
+      }
+
+      h1 {
+        font-size: rem(24px);
+        line-height: math.div(28, 24);
+        font-weight: 600;
+        margin-block-end: $spacing-07;
+      }
+      h2 {
+        font-size: rem(20px);
+        line-height: math.div(28, 20);
+        font-weight: 600;
+        margin-block-end: $spacing-06;
+      }
+      h3 {
+        font-size: rem(18px);
+        line-height: math.div(24, 18);
+        font-weight: 600;
+        margin-block-end: $spacing-04;
+      }
+    }
+
+    .stMarkdown {
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        margin-block-end: $spacing-06;
+      }
+      h1 {
+        @include type-style(heading-06);
+      }
+      h2 {
+        @include type-style(heading-05);
+      }
+      h3 {
+        @include type-style(heading-04);
+      }
+      h4 {
+        @include type-style(heading-03);
+      }
+      h5 {
+        @include type-style(heading-02);
+      }
+      h6 {
+        @include type-style(heading-01);
+      }
+
+      ul,
+      ol,
+      dl,
+      p {
+        font-size: rem(14px);
+        line-height: math.div(18, 14);
+      }
+    }
+
+    .stCode {
+      &,
+      * {
+        @include font-family(mono);
+      }
+      pre {
+        background-color: $layer-02;
+        padding-inline-end: rem(48px);
+        border-radius: 0;
+        code {
+          @include type-style(code-01);
+        }
+      }
+      button {
+        inline-size: rem(32px);
+        block-size: rem(32px);
+        position: absolute;
+        margin: rem(8px);
+        color: $text-primary;
+        &:hover {
+          background-color: $layer-hover-02;
+        }
+      }
+    }
+
+    .stAlert {
+      div[role="alert"] {
+        border-radius: 0;
+        position: relative;
+        color: $text-primary;
+      }
+      p {
+        font-size: rem(14px);
+        line-height: math.div(18, 14);
+      }
+      [data-testid="stAlertContentSuccess"],
+      [data-testid="stAlertContentInfo"],
+      [data-testid="stAlertContentWarning"],
+      [data-testid="stAlertContentError"] {
+        &::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border: solid var(--alert-border);
+          border-width: 1px 1px 1px 3px;
+          background-color: var(--alert-background);
+        }
+        > * {
+          position: relative;
+        }
+      }
+      [data-testid="stAlertContentSuccess"] {
+        --alert-border: #{$support-success};
+        --alert-background: #{$notification-background-success};
+      }
+      [data-testid="stAlertContentInfo"] {
+        --alert-border: #{$support-info};
+        --alert-background: #{$notification-background-info};
+      }
+      [data-testid="stAlertContentWarning"] {
+        --alert-border: #{$support-warning};
+        --alert-background: #{$notification-background-warning};
+      }
+      [data-testid="stAlertContentError"] {
+        --alert-border: #{$support-error};
+        --alert-background: #{$notification-background-error};
+      }
+      [data-testid="stAlertDynamicIcon"] {
+        inset-block-start: -1px;
+      }
+    }
+
+    .stButton,
+    .stDownloadButton {
+      button {
+        position: relative;
+        padding-block: rem(14px);
+        padding-inline: rem(15px) rem(63px);
+        border: 1px solid transparent;
+        border-radius: $spacing-03;
+        transition: color $duration-fast-02, background-color $duration-fast-02;
+        p {
+          font-size: rem(14px);
+          line-height: math.div(18, 14);
+          letter-spacing: rem(0.16px);
+        }
+        > span[color="inherit"] {
+          position: absolute;
+          inset-block-start: 50%;
+          inset-inline-end: rem(15px);
+          margin: 0;
+          transform: translateY(-50%);
+        }
+        [data-testid="stIconEmoji"] {
+          margin: 0;
+        }
+      }
+      button[kind="primary"] {
+        background-color: $button-primary;
+        &,
+        &:hover,
+        &:active {
+          color: $text-on-color;
+        }
+        &:hover {
+          background-color: $button-primary-hover;
+        }
+        &:active {
+          background-color: $button-primary-active;
+        }
+      }
+      button[kind="secondary"] {
+        background-color: $button-secondary;
+        &,
+        &:hover,
+        &:active {
+          color: $button-secondary-color;
+        }
+        &:hover {
+          background-color: $button-secondary-hover;
+        }
+        &:active {
+          background-color: $button-secondary-active;
+        }
+      }
+      button:disabled {
+        &,
+        &:hover,
+        &:active {
+          color: $text-on-color-disabled;
+          background-color: $button-disabled;
+        }
+      }
+    }
+    
+    [data-testid="stWidgetLabel"] {
+      min-block-size: 0;
+      margin-block-end: $spacing-03;
+      &,
+      p {
+        font-size: rem(14px);
+        line-height: math.div(18, 14);
+        font-weight: 600;
+      }
+    }
+
+    .stFileUploader {
+      section {
+        background-color: transparent;
+        border: 1px dashed $border-strong-01;
         &:hover,
         &:active,
         &:focus {
-          color: var(--cds-text-on-color);
-          background-color: var(--cds-background-inverse);
+          @include focus-outline('outline');
+          border-color: transparent;
+          box-shadow: none;
         }
       }
+      [data-testid="stBaseButton-secondary"] {
+        display: none;
+      }
+      [data-testid="stFileUploaderDropzoneInstructions"] {
+        > span:first-child {
+          display: none;
+        }
+        > div {
+          span,
+          small {
+            font-size: rem(14px);
+            line-height: math.div(18, 14);
+          }
+          span {
+            font-weight: 600;
+            color: $text-primary;
+            margin-bottom: $spacing-03;
+          }
+          small {
+            color: $text-secondary;
+          }
+        }
+      }
+    }
+
+    .stFileUploaderFile {
+      padding: rem(15px) $spacing-05;
+      background-color: $layer-02;
+      border-radius: $spacing-03;
+      margin-inline: -$spacing-05;
+      > div:first-child {
+        display: none;
+      }
+      [data-testid="stFileUploaderDeleteBtn"] {
+        margin-block: -$spacing-03;
+        margin-inline-end: -$spacing-03;
+        button {
+          inline-size: rem(32px);
+          block-size: rem(32px);
+          min-block-size: 0;
+          &:hover,
+          &:active,
+          &:focus {
+            color: inherit;
+          }
+        }
+      }
+    }
+
+    .stFileUploaderFileData {
+      padding-inline-start: 0;
+      font-size: rem(14px);
+      line-height: math.div(18, 14);
+      letter-spacing: rem(0.16px);
+    }
+
+    .stFileUploaderFileName {
+      margin-block-end: 0;
+    }
+
+    [data-testid="StyledFullScreenButton"] {
+      inline-size: rem(32px);
+      block-size: rem(32px);
+      inset-block-start: 0;
+      inset-inline-end: rem(32px);
+      &[title="Exit fullscreen"] {
+        inset-block-start: rem(12px);
+        inset-inline-end: rem(12px);
+      }
+    }
+
+    [data-testid="stVegaLiteChart"] {
+      summary {
+        inline-size: rem(32px);
+        block-size: rem(32px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    .stTable {
+      @include type-style(body-01);
+      inline-size: 100%;
+      border-collapse: collapse;
+      &,
+      th,
+      td {
+        border: 1px solid $border-subtle-00;
+      }
+      th,
+      td {
+        padding: $spacing-03 $spacing-04;
+        text-align: start;
+      }
+      th {
+        font-weight: bold;
+      }
+    }
+
+    .stExpander {
+      details {
+        border-color: $border-subtle-00;
+        &:hover,
+        &:focus {
+          @include focus-outline('outline');
+          border-color: transparent;
+        }
+      }
+      summary {
+        padding-block: rem(13px);
+        &:hover {
+          color: inherit;
+          svg {
+            fill: currentColor;
+          }
+        }
+      }
+    }
+
+    .stRadio {
+      [role="radiogroup"] {
+        gap: $spacing-03;
+      }
+    }
+
+    [data-baseweb="radio"] > div:first-child,
+    [data-baseweb="checkbox"] > span:first-child {
+      inline-size: rem(18px);
+      block-size: rem(18px);
+      margin: 0;
+      border: 1px solid $border-subtle;
+      background-color: transparent;
+      transition: none;
+    }
+
+    [data-baseweb="radio"],
+    [data-baseweb="checkbox"] {
+      &,
+      p {
+        font-size: rem(14px);
+        line-height: math.div(18, 14);
+        letter-spacing: rem(0.16px);
+        font-weight: normal;
+      }
+
+      [data-testid="stWidgetLabel"] {
+        margin-block-end: 0;
+      }
+    }
+
+    [data-baseweb="radio"]:has(input:checked) > div:first-child,
+    [data-baseweb="checkbox"]:has(input:checked) > span:first-child {
+      border-color: $icon-primary;
+    }
+
+    [data-baseweb="radio"]:has(input:focus-visible),
+    [data-baseweb="checkbox"]:has(input:focus-visible) {
+      background-color: transparent;
+    }
+
+    [data-baseweb="radio"]:has(input:focus-visible) > div:first-child,
+    [data-baseweb="checkbox"]:has(input:focus-visible) > span:first-child {
+      @include focus();
+    }
+
+    [data-baseweb="radio"] {
+      > div:first-child > div {
+        inline-size: rem(8px);
+        block-size: rem(8px);
+        display: none;
+        background-color: $icon-primary;
+        transition: none;
+      }
+
+      &:has(input:checked) > div:first-child > div {
+        display: block;
+      }
+    }
+
+    [data-baseweb="checkbox"] > span:first-child {
+      border-radius: $spacing-01;
+      background-size: rem(13px);
+    }
+
+    [data-baseweb="checkbox"]:has(input:checked) > span:first-child {
+      background-color: $icon-primary;
+    }
+
+    [data-baseweb="base-input"] > input,
+    [data-baseweb="base-input"] > textarea,
+    [data-baseweb="select"] > div {
+      border: 1px solid $border-subtle;
+      background-color: transparent;
+      color: $text-primary;
+      font-size: rem(14px);
+      line-height: math.div(18, 14);
+      letter-spacing: rem(0.16px);
+      block-size: auto;
+      &:focus-within {
+        @include focus-outline('outline');
+      }
+    }
+
+    [data-baseweb="base-input"] > input,
+    [data-baseweb="base-input"] > textarea {
+      border-radius: $spacing-03;
+      padding: rem(14px) $spacing-05;
+      min-block-size: rem(48px);
+      &::placeholder {
+        color: $text-placeholder;
+      }
+    }
+
+    [data-baseweb="input"],
+    [data-baseweb="textarea"],
+    [data-baseweb="base-input"] {
+      background-color: transparent;
+      border: 0;
+      border-radius: 0;
+      block-size: auto;
+    }
+
+    [data-baseweb="select"] > div {
+      > div {
+        padding: rem(10px) rem(16px);
+        block-size: rem(46px);
+        + div {
+          padding-inline-start: 0;
+          padding-inline-end: $spacing-03;
+          margin-inline-start: -$spacing-02;
+        }
+        > div + div:last-child {
+          color: $text-placeholder;
+        }
+        [value] {
+          block-size: auto;
+          margin-inline-start: 0;
+        }
+        input {
+          font-size: inherit;
+          line-height: inherit;
+          letter-spacing: inherit;
+        }
+      }
+    }
+
+    [data-testid="stNumberInputContainer"] {
+      block-size: auto;
+      border: 0;
+      [data-baseweb="base-input"] > input, {
+        border-start-end-radius: 0;
+        border-end-end-radius: 0;
+        border-inline-end: 0;
+      }
+    }
+
+    [data-testid="stNumberInputStepDown"],
+    [data-testid="stNumberInputStepUp"] {
+      background-color: $border-subtle;
+      padding-inline: $spacing-03;
+      inline-size: rem(40px);
+      &:focus {
+        box-shadow: none;
+        color: inherit;
+      }
+      &:hover {
+        background-color: $button-primary;
+        color: $text-on-color;
+      }
+    }
+
+    [data-testid="InputInstructions"] {
+      color: $text-secondary;
+      inset-inline-end: $spacing-03;
+      inset-block-end: $spacing-02;
+    }
+  }
+
+  [data-baseweb="popover"] {
+    box-shadow: $box-shadow;
+  }
+
+  [data-baseweb="menu"],
+  [data-testid="stSelectboxVirtualDropdown"],
+  [data-testid="stSelectboxVirtualDropdownEmpty"] {
+    box-shadow: none;
+    font-size: rem(14px);
+    line-height: math.div(18, 14);
+    letter-spacing: rem(0.16px);
+    li {
+      font-size: inherit;
+      line-height: inherit;
+      letter-spacing: inherit;
     }
   }
 
   [data-baseweb="tag"] {
-    background-color: var(--cds-tag-background-blue);
-    color: var(--cds-tag-color-blue);
-    border-radius: 1rem;
-    margin: 0.25rem;
-    padding-inline: 0.5rem;
-    vertical-align: middle;
-    font-size: 0.75rem;
-
-    span {
-      font-size: 0.75rem;
+    background-color: $tag-background-blue;
+    color: $tag-color-blue;
+    border-radius: rem(9px);
+    padding-block: 0;
+    padding-inline: $spacing-03;
+    font-size: rem(12px);
+    line-height: math.div(18, 12);
+    letter-spacing: rem(0.16px);
+    block-size: auto;
+    margin-block: $spacing-02;
+    margin-inline-end: $spacing-02;
+    &:focus {
+      @include focus();
     }
-  }
-
-  .stApp code {
-    @include font-family(mono);
-  }
-
-  .stAppHeader {
-    display: none;
-  }
-  .stAppToolbar {
-    display: none;
+    span {
+      font-size: inherit;
+      line-height: inherit;
+      letter-spacing: inherit;
+    }
   }
 }
