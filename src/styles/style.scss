@@ -21,7 +21,7 @@
 
 @mixin focus() {
   outline: none;
-  box-shadow: 0 0 0 2px $color-white, 0 0 0 4px $focus;
+  box-shadow: 0 0 0 2px $text-inverse, 0 0 0 4px $focus;
 }
 
 #root {
@@ -92,6 +92,7 @@
       h6 {
         padding: 0;
         scroll-margin-block-start: $spacing-06;
+        color: inherit;
       }
       span {
         scroll-margin-block-start: $spacing-06;
@@ -154,6 +155,15 @@
       }
     }
 
+    [data-testid="stHeaderActionElements"] {
+      svg {
+        stroke: $text-primary;
+        &:hover {
+          stroke: currentColor;
+        }
+      }
+    }
+
     .stCode {
       &,
       * {
@@ -163,6 +173,7 @@
         background-color: $layer-02;
         padding-inline-end: rem(48px);
         border-radius: 0;
+        color: inherit;
         code {
           @include type-style(code-01);
         }
@@ -177,6 +188,10 @@
           background-color: $layer-hover-02;
         }
       }
+    }
+
+    .stMetric > * {
+      color: inherit;
     }
 
     .stAlert {
@@ -292,6 +307,7 @@
     [data-testid="stWidgetLabel"] {
       min-block-size: 0;
       margin-block-end: $spacing-03;
+      color: inherit;
       &,
       p {
         font-size: rem(14px);
@@ -429,6 +445,9 @@
             fill: currentColor;
           }
         }
+        &:focus-visible {
+          outline: none;
+        }
       }
     }
 
@@ -450,6 +469,10 @@
 
     [data-baseweb="radio"],
     [data-baseweb="checkbox"] {
+      > div:last-child {
+        color: inherit;
+      }
+
       &,
       p {
         font-size: rem(14px);
@@ -494,7 +517,22 @@
 
     [data-baseweb="checkbox"] > span:first-child {
       border-radius: $spacing-01;
-      background-size: rem(13px);
+      background: none;
+      position: relative;
+      inset-block-start: 0;
+      inset-inline-start: 0;
+      &::after {
+        content: '';
+        position: absolute;
+        border-block-end: 1.5px solid $icon-inverse;
+        border-inline-start: 1.5px solid $icon-inverse;
+        inline-size: rem(9px);
+        block-size: rem(5px);
+        inset-block-start: rem(0.5px);
+        inset-inline-start: rem(4px);
+        transform: scale(1) rotate(-45deg);
+        transform-origin: bottom right;
+      }
     }
 
     [data-baseweb="checkbox"]:has(input:checked) > span:first-child {
@@ -572,6 +610,7 @@
     [data-testid="stNumberInputStepDown"],
     [data-testid="stNumberInputStepUp"] {
       background-color: $border-subtle;
+      color: inherit;
       padding-inline: $spacing-03;
       inline-size: rem(40px);
       &:focus {
