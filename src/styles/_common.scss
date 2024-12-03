@@ -8,6 +8,5 @@
 @forward "@carbon/styles/scss/spacing";
 @forward "@carbon/styles/scss/colors" as color-*;
 @forward "@carbon/styles/scss/utilities/convert";
+@forward '@carbon/styles/scss/utilities/focus-outline';
 @forward "@carbon/styles/scss/motion";
-
-$block-radius: 0.5rem;
