@@ -1,12 +1,12 @@
-@forward "@carbon/styles/scss/config" with (
+@forward '@carbon/styles/scss/config' with (
   // carbon specifies invalid font-display value 'swap', this fixes it
   $font-display: swap
 );
-@forward "theme";
-@forward "@carbon/styles/scss/type";
-@forward "@carbon/styles/scss/fonts";
-@forward "@carbon/styles/scss/spacing";
-@forward "@carbon/styles/scss/colors" as color-*;
-@forward "@carbon/styles/scss/utilities/convert";
+@forward 'theme';
+@forward '@carbon/styles/scss/type';
+@forward '@carbon/styles/scss/fonts';
+@forward '@carbon/styles/scss/spacing';
+@forward '@carbon/styles/scss/colors' as color-*;
+@forward '@carbon/styles/scss/utilities/convert';
 @forward '@carbon/styles/scss/utilities/focus-outline';
-@forward "@carbon/styles/scss/motion";
+@forward '@carbon/styles/scss/motion';
