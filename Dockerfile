@@ -23,6 +23,10 @@ RUN --mount=type=cache,id=pnpm,target=~/.pnpm-store pnpm install --frozen-lockfi
 # Rebuild the source code only when needed
 FROM base AS builder
 
+# Define all origins that are allowed to frame this website
+ARG ALLOWED_FRAME_ANCESTORS
+ENV VITE_ALLOWED_FRAME_ANCESTORS=${ALLOWED_FRAME_ANCESTORS}
+
 ENV CI=1
 
 COPY --from=deps ${APP_DIR}/node_modules ./node_modules
@@ -32,8 +36,7 @@ RUN corepack enable pnpm && pnpm run build
 
 FROM nginx:stable-alpine AS runner
 
-# Can be baked in or defined at runtime
-ARG ALLOWED_FRAME_ANCESTORS="'none'"
+ARG ALLOWED_FRAME_ANCESTORS
 ENV ALLOWED_FRAME_ANCESTORS=${ALLOWED_FRAME_ANCESTORS}
 
 COPY --from=builder /app/nginx /etc/nginx/templates

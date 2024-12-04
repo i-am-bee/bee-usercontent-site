@@ -31,6 +31,7 @@ server {
         script-src
             'self'
             'unsafe-eval'
+            'unsafe-inline'
             blob:
             https://cdn.jsdelivr.net/pyodide/
             https://cdn.jsdelivr.net/npm/@stlite/;
