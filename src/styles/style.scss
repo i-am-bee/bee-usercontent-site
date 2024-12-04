@@ -443,7 +443,7 @@
         text-align: start;
       }
       th {
-        font-weight: bold;
+        font-weight: 600;
       }
     }
 
@@ -497,7 +497,7 @@
         font-size: rem(14px);
         line-height: math.div(18, 14);
         letter-spacing: rem(0.16px);
-        font-weight: normal;
+        font-weight: 400;
       }
 
       [data-testid='stWidgetLabel'] {
