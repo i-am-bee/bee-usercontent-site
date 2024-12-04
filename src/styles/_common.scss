@@ -1,10 +1,10 @@
 @forward '@carbon/styles/scss/config' with (
-  // carbon specifies invalid font-display value 'swap', this fixes it
-  $font-display: swap
+  // Disable all fonts, we are loading them manually
+  $css--font-face: false
 );
 @forward 'theme';
+@forward 'fonts';
 @forward '@carbon/styles/scss/type';
-@forward '@carbon/styles/scss/fonts';
 @forward '@carbon/styles/scss/spacing';
 @forward '@carbon/styles/scss/colors' as color-*;
 @forward '@carbon/styles/scss/utilities/convert';
