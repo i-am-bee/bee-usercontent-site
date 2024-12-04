@@ -6,11 +6,20 @@ declare global {
   }
 }
 
+// Page is loaded directly
+if (window === window.parent) window.location.href = 'https://ibm.com';
+
+const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').split(' ').filter(Boolean);
+
 (() => {
   window.addEventListener('message', async (event) => {
-    const { data } = event;
+    const { data, origin } = event;
 
-    if (!data && !data.type) {
+    if (
+      (!data && !data.type) ||
+      // allow self origin messages from python app
+      ![...ALLOWED_ORIGINS, window.location.origin].includes(origin)
+    ) {
       return;
     }
 
@@ -28,21 +37,13 @@ declare global {
         return;
       case 'updateCode':
         await window.app.writeFile('app.py', data.code);
-        await window.app.writeFile(
-          'trigger.py',
-          'import run; await run.run(); # ' + Math.random()
-        );
+        await window.app.writeFile('trigger.py', 'import run; await run.run(); # ' + Math.random());
 
         return;
       case 'reportError':
-        parent.postMessage(
-          {
-            type: 'reportError',
-            errorText: data?.errorText,
-          },
-          '*'
-        ); // IMPORTANT: put actual origin here in production
-
+        ALLOWED_ORIGINS.forEach((origin: string) =>
+          parent.postMessage({ type: 'reportError', errorText: data?.errorText }, origin),
+        );
         return;
       default:
         return;
@@ -66,6 +67,6 @@ declare global {
         'theme.primaryColor': '#0f62fe',
       },
     },
-    document.getElementById('root')
+    document.getElementById('root'),
   );
 })();

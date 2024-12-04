@@ -1,0 +1,68 @@
+server {
+  listen       80;
+  listen  [::]:80;
+  server_name  localhost;
+
+  root /usr/share/nginx/html;
+  index index.html;
+
+  error_page 500 502 503 504 /50x.html;
+
+  gzip on;
+  gzip_disable "msie6";
+  gzip_vary on;
+  gzip_min_length 1000;
+  gzip_types text/plain text/html text/css application/javascript application/json;
+
+
+  # SPA routing, everything falls back to the root index.html
+  location / {
+    try_files $uri $uri/ /index.html =404;
+
+    add_header Cache-Control "no-store";
+    add_header X-Frame-Options "DENY" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload" always;
+
+    add_header Content-Security-Policy "
+        default-src 'self';
+        script-src
+            'self'
+            'unsafe-eval'
+            'unsafe-inline'
+            blob:
+            https://cdn.jsdelivr.net/pyodide/
+            https://cdn.jsdelivr.net/npm/@stlite/;
+        style-src
+            'self'
+            'unsafe-inline'
+            https://cdn.jsdelivr.net/npm/@stlite/;
+        img-src
+            'self'
+            data:;
+        font-src
+            'self'
+            https://cdn.jsdelivr.net/npm/@stlite/;
+        connect-src
+            'self'
+            http://localhost:8000/v1/chat/completions
+            https://cdn.jsdelivr.net/npm/@stlite/
+            https://cdn.jsdelivr.net/pyodide/
+            https://pypi.org/simple/
+            https://files.pythonhosted.org/packages/;
+        object-src 'none';
+        base-uri 'none';
+        frame-ancestors ${ALLOWED_FRAME_ANCESTORS};
+        form-action 'self';
+        upgrade-insecure-requests;
+    " always;
+  }
+
+  # Serve assets with immutable cache
+  location /assets/ {
+    try_files $uri =404;
+    add_header Cache-Control "public, max-age=31536000, immutable";
+  }
+}

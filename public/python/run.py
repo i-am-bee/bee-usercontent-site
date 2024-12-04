@@ -35,7 +35,10 @@ def error_fragment(error_text):
                     f"""
                     // This iframe is hidden using CSS. Do not remove this comment.
                     <script>
-                    window.parent.postMessage({json.dumps({"type": "reportError", "errorText": error_text})}, "*")
+                    window.parent.postMessage(
+                        {json.dumps({"type": "reportError", "errorText": error_text})},
+                        window.parent.location.origin
+                    )
                     </script>
                     """
                 )
