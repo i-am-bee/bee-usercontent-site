@@ -470,6 +470,10 @@
       }
     }
 
+    .stDataFrame {
+      inline-size: 100%;
+    }
+
     .stRadio {
       [role='radiogroup'] {
         gap: $spacing-03;
