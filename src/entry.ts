@@ -1,9 +1,7 @@
+import runPy from './python/run.py?raw'
+
 declare global {
   const stlite: any;
-
-  interface Window {
-    app: any;
-  }
 }
 
 // Page is loaded directly
@@ -36,8 +34,9 @@ const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').spl
 
         return;
       case 'updateCode':
-        await window.app.writeFile('app.py', data.code);
-        await window.app.writeFile('trigger.py', 'import run; await run.run(); # ' + Math.random());
+        await app.writeFile('app.py', data.code);
+        await app.writeFile('config.json', JSON.stringify(data.config ?? {}));
+        await app.writeFile('trigger.py', 'import run; await run.run(); # ' + Math.random());
 
         return;
       case 'reportError':
@@ -50,16 +49,15 @@ const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').spl
     }
   });
 
-  window.app = stlite.mount(
+  const app = stlite.mount(
     {
-      requirements: ['requests'],
+      requirements: ['requests', 'pydantic'],
       entrypoint: 'trigger.py',
       files: {
         'trigger.py': 'import run; await run.run()',
         'app.py': '',
-        // NOTE: in production, we probably want to inline these two
-        'run.py': { url: 'python/run.py' },
-        'util.py': { url: 'python/util.py' },
+        'config.json': '{}',
+        'run.py': runPy,
       },
       streamlitConfig: {
         'client.toolbarMode': 'minimal',
