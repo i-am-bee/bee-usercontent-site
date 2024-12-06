@@ -1,9 +1,7 @@
+import runPy from './python/run.py?raw'
+
 declare global {
   const stlite: any;
-
-  interface Window {
-    app: any;
-  }
 }
 
 // Page is loaded directly
@@ -12,6 +10,25 @@ if (window === window.parent) window.location.href = 'https://ibm.com';
 const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').split(' ').filter(Boolean);
 
 (() => {
+  const app = stlite.mount(
+    {
+      requirements: ['requests', 'pydantic'],
+      entrypoint: 'trigger.py',
+      files: {
+        'trigger.py': 'import run; await run.run()',
+        'app.py': '',
+        'config.json': '{}',
+        'run.py': runPy,
+      },
+      streamlitConfig: {
+        'client.toolbarMode': 'minimal',
+        'server.runOnSave': true,
+        'theme.primaryColor': '#0f62fe',
+      },
+    },
+    document.getElementById('root'),
+  );
+
   window.addEventListener('message', async (event) => {
     const { data, origin } = event;
 
@@ -36,37 +53,42 @@ const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').spl
 
         return;
       case 'updateCode':
-        await window.app.writeFile('app.py', data.code);
-        await window.app.writeFile('trigger.py', 'import run; await run.run(); # ' + Math.random());
+        await app.writeFile('app.py', data.code);
+        await app.writeFile('config.json', JSON.stringify(data.config ?? {}));
+        await app.writeFile('trigger.py', 'import run; await run.run(); # ' + Math.random());
 
         return;
-      case 'reportError':
-        ALLOWED_ORIGINS.forEach((origin: string) =>
-          parent.postMessage({ type: 'reportError', errorText: data?.errorText }, origin),
-        );
+      case 'bee:response':
+        app.kernel._worker.postMessage(data);
+
         return;
       default:
         return;
     }
   });
 
-  window.app = stlite.mount(
-    {
-      requirements: ['requests'],
-      entrypoint: 'trigger.py',
-      files: {
-        'trigger.py': 'import run; await run.run()',
-        'app.py': '',
-        // NOTE: in production, we probably want to inline these two
-        'run.py': { url: 'python/run.py' },
-        'util.py': { url: 'python/util.py' },
-      },
-      streamlitConfig: {
-        'client.toolbarMode': 'minimal',
-        'server.runOnSave': true,
-        'theme.primaryColor': '#0f62fe',
-      },
-    },
-    document.getElementById('root'),
-  );
+  app.kernel._worker.addEventListener('message', (event: MessageEvent) => {
+    const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+    switch (data.type) {
+      case 'bee:reportError':
+        ALLOWED_ORIGINS.forEach((origin: string) =>
+          parent.postMessage({ type: 'reportError', errorText: data?.errorText }, origin),
+        );
+        return;
+      case 'bee:request':
+        const response = {
+          type: 'bee:response',
+          request_id: data.request_id,
+          payload: {
+            message: 'THIS IS GOOD!'
+          }
+        }
+        console.log('bee:request %o, sending response %o', data, response)
+        app.kernel._worker.postMessage(response);
+        // ALLOWED_ORIGINS.forEach((origin: string) => parent.postMessage(data, origin));
+        return;
+      default:
+        return;
+    }
+  });
 })();
