@@ -58,6 +58,10 @@ const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').spl
         await app.writeFile('trigger.py', 'import run; await run.run(); # ' + Math.random());
 
         return;
+      case 'bee:response':
+        app.kernel._worker.postMessage(data);
+
+        return;
       default:
         return;
     }
@@ -67,10 +71,21 @@ const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').spl
     const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
     switch (data.type) {
       case 'bee:reportError':
-        console.log("REPORT ERROR")
         ALLOWED_ORIGINS.forEach((origin: string) =>
           parent.postMessage({ type: 'reportError', errorText: data?.errorText }, origin),
         );
+        return;
+      case 'bee:request':
+        const response = {
+          type: 'bee:response',
+          request_id: data.request_id,
+          payload: {
+            message: 'THIS IS GOOD!'
+          }
+        }
+        console.log('bee:request %o, sending response %o', data, response)
+        app.kernel._worker.postMessage(response);
+        // ALLOWED_ORIGINS.forEach((origin: string) => parent.postMessage(data, origin));
         return;
       default:
         return;

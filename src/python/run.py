@@ -1,23 +1,23 @@
 import ast
 import asyncio
 import functools
+import importlib
 import inspect
 import json
 import pathlib
 import re
-import runpy
 import sys
 import traceback
+import typing
+import uuid
 import warnings
 
 import js
 import micropip
 import pyodide
-from pyodide.http import pyfetch
+import pyodide.ffi
 
 import pydantic
-import requests
-import requests.adapters
 import streamlit as st
 
 
@@ -38,6 +38,27 @@ class LLMFunctionLimitExceededException(Exception):
     pass
 
 
+def request(request_type: str, payload: typing.Any) -> asyncio.Future:
+    future = asyncio.Future()
+    request_id = str(uuid.uuid4())
+
+    def handle_response(event):
+        if event.data.type != "bee:response" or event.data.request_id != request_id:
+            return
+        future.set_result(event.data.payload)
+        js.removeEventListener("message", handler)
+
+    handler = pyodide.ffi.create_proxy(handle_response)
+    js.addEventListener("message", handler)
+    js.postMessage(json.dumps({
+        "type": "bee:request",
+        "request_id": request_id,
+        "request_type": request_type,
+        "payload": payload
+    }))
+    return future
+
+
 def llm_function(creative=False):
     def _llm_function(func):
         if not func.__doc__:
@@ -49,7 +70,7 @@ def llm_function(creative=False):
         return_type_adapter = pydantic.TypeAdapter(return_type)
 
         @functools.wraps(func)
-        def wrapper(*args, **kwargs):
+        async def wrapper(*args, **kwargs):
             if CONFIG.get("llm_function_rate_limited"):
                 raise LLMFunctionLimitExceededException()
 
@@ -87,38 +108,23 @@ def llm_function(creative=False):
                     "Input too long! Try spliting input into chunks of 200000 characters and processing them separately, then merging the results. You can use _ to define another function for merging partial results."
                 )
 
-            with requests.Session() as s:
-                s.mount(CONFIG["api_url"], requests.adapters.HTTPAdapter(max_retries=requests.adapters.Retry(
-                    total=5,
-                    status_forcelist=[429],
-                    backoff_factor=1.0,
-                )))
+            response = await request(
+                "/v1/chat/completions",
+                {
+                    "model": "runtime",
+                    "messages": messages,
+                    "temperature": 0.8 if creative else 0.0,
+                    "max_tokens": 4096,
+                    "json_schema": None if return_type is str else json_schema,
+                }
+            )
 
-                response = requests.post(
-                    f"{CONFIG["api_url"]}/v1/chat/completions",
-                    headers={"Content-Type": "application/json"},
-                    json={
-                        "model": "runtime",
-                        "messages": messages,
-                        "temperature": 0.8 if creative else 0.0,
-                        "max_tokens": 4096,
-                        "json_schema": None if return_type is str else json_schema,
-                    }
-                )
+            if getattr(response, 'error', None):
+                raise LLMFunctionLimitExceededException()
 
-                try:
-                    response.raise_for_status()
-                except requests.HTTPError as e:
-                    if e.response.status_code == 429:
-                        raise LLMFunctionLimitExceededException() from e
-                    else:
-                        raise
-
-                response_text = response.json()["choices"][0]["message"]["content"]
-
-                if return_type is str:
-                    return response_text
-                return return_type_adapter.validate_json(response_text)
+            if return_type is str:
+                return response.message
+            return return_type_adapter.validate_json(response.message)
 
         return wrapper
 
@@ -188,15 +194,12 @@ async def translate_modules_to_packages(modules):
     }
     packages = [OVERRIDES[module] for module in modules if module in OVERRIDES.keys()]
     if unknown_modules := [module for module in modules if module not in OVERRIDES.keys()]:
-        response = await pyfetch(
-            url=f"{CONFIG["api_url"]}/modules-to-packages",  # TODO -- hardcoded URL, can't use relative here
-            method="POST",
-            headers={"Content-Type": "application/json"},
-            body=json.dumps({"modules": unknown_modules}),
+        response = await request(
+            "/modules-to-packages",
+            {"modules": unknown_modules},
         )
-        if response.ok:
-            data = await response.json()
-            packages += data.get("packages", [])
+        if not getattr(response, 'error'):
+            packages += response.packages
     return packages
 
 
@@ -218,22 +221,20 @@ def patch_streamlit():
 
 
 async def run():
-    source = pathlib.Path("app.py").read_text()
-    imported_modules = identify_modules(source)
-    available_modules = sys.modules.keys()
-    needed_modules = list(imported_modules - available_modules)
-    if needed_modules:
-        packages = await translate_modules_to_packages(needed_modules)
-        await asyncio.gather(
-            *(micropip.install(package) for package in packages),
-            return_exceptions=True,
-        )
     try:
-        # 10ms wait needed by Stlite -- it won't update UI, incl. loading indicator, during sync execution
+        source = pathlib.Path("app.py").read_text()
+        imported_modules = identify_modules(source)
+        available_modules = sys.modules.keys()
+        needed_modules = list(imported_modules - available_modules)
+        if needed_modules:
+            packages = await translate_modules_to_packages(needed_modules)
+            await asyncio.gather(
+                *(micropip.install(package) for package in packages),
+                return_exceptions=True,
+            )
         await asyncio.sleep(0.01)
-
         patch_streamlit()
-        runpy.run_path("app.py", run_name="__main__")
+        await importlib.import_module("app").main()
     except LLMFunctionLimitExceededException:
         llm_function_rate_limit_exceeded_error_fragment()
     except Exception as e:
