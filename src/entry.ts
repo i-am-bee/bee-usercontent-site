@@ -10,6 +10,25 @@ if (window === window.parent) window.location.href = 'https://ibm.com';
 const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').split(' ').filter(Boolean);
 
 (() => {
+  const app = stlite.mount(
+    {
+      requirements: ['requests', 'pydantic'],
+      entrypoint: 'trigger.py',
+      files: {
+        'trigger.py': 'import run; await run.run()',
+        'app.py': '',
+        'config.json': '{}',
+        'run.py': runPy,
+      },
+      streamlitConfig: {
+        'client.toolbarMode': 'minimal',
+        'server.runOnSave': true,
+        'theme.primaryColor': '#0f62fe',
+      },
+    },
+    document.getElementById('root'),
+  );
+
   window.addEventListener('message', async (event) => {
     const { data, origin } = event;
 
@@ -39,7 +58,16 @@ const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').spl
         await app.writeFile('trigger.py', 'import run; await run.run(); # ' + Math.random());
 
         return;
-      case 'reportError':
+      default:
+        return;
+    }
+  });
+
+  app.kernel._worker.addEventListener('message', (event: MessageEvent) => {
+    const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+    switch (data.type) {
+      case 'bee:reportError':
+        console.log("REPORT ERROR")
         ALLOWED_ORIGINS.forEach((origin: string) =>
           parent.postMessage({ type: 'reportError', errorText: data?.errorText }, origin),
         );
@@ -48,23 +76,4 @@ const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').spl
         return;
     }
   });
-
-  const app = stlite.mount(
-    {
-      requirements: ['requests', 'pydantic'],
-      entrypoint: 'trigger.py',
-      files: {
-        'trigger.py': 'import run; await run.run()',
-        'app.py': '',
-        'config.json': '{}',
-        'run.py': runPy,
-      },
-      streamlitConfig: {
-        'client.toolbarMode': 'minimal',
-        'server.runOnSave': true,
-        'theme.primaryColor': '#0f62fe',
-      },
-    },
-    document.getElementById('root'),
-  );
 })();

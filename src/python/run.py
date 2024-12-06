@@ -1,20 +1,24 @@
+import ast
 import asyncio
+import functools
+import inspect
 import json
 import pathlib
-import micropip
-import traceback
-import streamlit as st
-import runpy
-import ast
-import sys
-from pyodide.http import pyfetch
 import re
+import runpy
+import sys
+import traceback
+import warnings
+
+import js
+import micropip
+import pyodide
+from pyodide.http import pyfetch
+
+import pydantic
 import requests
 import requests.adapters
-import inspect
-from functools import wraps
-import pydantic
-import warnings
+import streamlit as st
 
 
 warnings.filterwarnings("ignore")
@@ -44,7 +48,7 @@ def llm_function(creative=False):
         return_type = sig.return_annotation
         return_type_adapter = pydantic.TypeAdapter(return_type)
 
-        @wraps(func)
+        @functools.wraps(func)
         def wrapper(*args, **kwargs):
             if CONFIG.get("llm_function_rate_limited"):
                 raise LLMFunctionLimitExceededException()
@@ -153,14 +157,7 @@ def error_fragment(error_text):
         st.write("🤯 An error occurred while executing the app.")
         if st.button("Try to fix this error", icon="🛠️", type="primary"):
             with root.container(border=True):
-                st.components.v1.html(
-                    f"""
-                    // This iframe is hidden using CSS. Do not remove this comment.
-                    <script>
-                    window.parent.postMessage({json.dumps({"type": "reportError", "errorText": error_text})}, "*")
-                    </script>
-                    """
-                )
+                js.postMessage(json.dumps({"type": "bee:reportError", "errorText": error_text}))
                 st.write("🛠️ The error is being fixed...")
                 return
         st.expander("Error details").code(error_text, language=None)
@@ -169,14 +166,7 @@ def error_fragment(error_text):
 @st.fragment
 def llm_function_rate_limit_exceeded_error_fragment():
     st.error("You have exceeded the limit for using LLM functions.")
-    st.components.v1.html(
-        f"""
-        // This iframe is hidden using CSS. Do not remove this comment.
-        <script>
-        window.parent.postMessage({json.dumps({"type": "reportRateLimitExceededError"})}, "*")
-        </script>
-        """
-    )
+    js.postMessage(json.dumps({"type": "bee:reportRateLimitExceededError"}))
 
 
 def identify_modules(source_code: str) -> set[str]:
