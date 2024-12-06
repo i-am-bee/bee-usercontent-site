@@ -641,9 +641,15 @@
         box-shadow: none;
         color: inherit;
       }
-      &:hover {
+      &:hover:not(:disabled) {
         background-color: $button-primary;
         color: $text-on-color;
+      }
+      &:disabled {
+        color: $text-on-color-disabled;
+      }
+      svg {
+        color: inherit;
       }
     }
 
