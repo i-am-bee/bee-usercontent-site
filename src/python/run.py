@@ -87,7 +87,7 @@ def llm_function(creative=False):
             messages = [
                 {
                     "role": "system",
-                    "content": f"TASK: {instruction}\n\nRespond to the input data according to the task. Your response must be concise and adhere strictly to the task description. " + ("Your response should only contain the requested text, NEVER write 'Here it is:' or similar framing phrases. Do not acknowledge or cummunicate with the user outside of fulfilling the request." if return_type is str else f"Your reponse will consist of a raw JSON {json_schema['type']}, accompanied by no further text, NOT wrapped in a code block, with string values properly escaped, adhering to the structure defined by the following JSON Schema: {json.dumps(json_schema)}"),
+                    "content": f"TASK: {instruction}\n\nRespond to the input data according to the task. Your response must be concise and adhere strictly to the task description. " + ("Your response should only contain the requested text, NEVER write 'Here it is:' or similar framing phrases. Do not acknowledge or communicate with the user outside of fulfilling the request." if return_type is str else f"Your response will consist of a raw JSON {json_schema['type']}, accompanied by no further text, NOT wrapped in a code block, with string values properly escaped, adhering to the structure defined by the following JSON Schema: {json.dumps(json_schema)}"),
                 },
                 {
                     "role": "user",
