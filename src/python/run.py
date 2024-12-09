@@ -1,5 +1,6 @@
 import ast
 import asyncio
+import runpy
 import functools
 import importlib
 import inspect
@@ -111,7 +112,6 @@ def llm_function(creative=False):
             response = await request(
                 "/v1/chat/completions",
                 {
-                    "model": "runtime",
                     "messages": messages,
                     "temperature": 0.8 if creative else 0.0,
                     "max_tokens": 4096,
@@ -127,7 +127,6 @@ def llm_function(creative=False):
             return return_type_adapter.validate_json(response.message)
 
         return wrapper
-
     return _llm_function
 
 
@@ -198,7 +197,7 @@ async def translate_modules_to_packages(modules):
             "/modules-to-packages",
             {"modules": unknown_modules},
         )
-        if not getattr(response, 'error'):
+        if not getattr(response, 'error', None):
             packages += response.packages
     return packages
 
