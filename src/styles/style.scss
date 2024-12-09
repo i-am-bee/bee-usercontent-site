@@ -255,6 +255,10 @@
       }
     }
 
+    .stForm {
+      border-color: $border-subtle;
+    }
+
     .stButton,
     .stDownloadButton,
     .stFormSubmitButton {
@@ -470,6 +474,10 @@
       }
     }
 
+    .stDataFrame {
+      inline-size: 100%;
+    }
+
     .stRadio {
       [role='radiogroup'] {
         gap: $spacing-03;
@@ -637,9 +645,15 @@
         box-shadow: none;
         color: inherit;
       }
-      &:hover {
+      &:hover:not(:disabled) {
         background-color: $button-primary;
         color: $text-on-color;
+      }
+      &:disabled {
+        color: $text-on-color-disabled;
+      }
+      svg {
+        color: inherit;
       }
     }
 
