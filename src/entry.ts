@@ -1,4 +1,4 @@
-import runPy from './python/run.py?raw'
+import runPy from './python/run.py?raw';
 
 declare global {
   const stlite: any;
@@ -43,16 +43,16 @@ const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').spl
     const { classList } = document.body;
 
     switch (data.type) {
-      case 'setFullscreen':
+      case 'bee:setFullscreen':
         classList.toggle('fullscreen', data.value);
 
         return;
-      case 'updateTheme':
+      case 'bee:updateTheme':
         classList.remove(data.theme === 'light' ? 'cds--g90' : 'cds--white');
         classList.add(data.theme === 'light' ? 'cds--white' : 'cds--g90');
 
         return;
-      case 'updateCode':
+      case 'bee:updateCode':
         await app.writeFile('app.py', data.code);
         await app.writeFile('config.json', JSON.stringify(data.config ?? {}));
         await app.writeFile('trigger.py', 'import run; await run.run(); # ' + Math.random());
@@ -60,7 +60,6 @@ const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').spl
         return;
       case 'bee:response':
         app.kernel._worker.postMessage(data);
-
         return;
       default:
         return;
@@ -72,20 +71,11 @@ const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').spl
     switch (data.type) {
       case 'bee:reportError':
         ALLOWED_ORIGINS.forEach((origin: string) =>
-          parent.postMessage({ type: 'reportError', errorText: data?.errorText }, origin),
+          parent.postMessage({ type: data.type, errorText: data?.errorText }, origin),
         );
         return;
       case 'bee:request':
-        const response = {
-          type: 'bee:response',
-          request_id: data.request_id,
-          payload: {
-            message: 'THIS IS GOOD!'
-          }
-        }
-        console.log('bee:request %o, sending response %o', data, response)
-        app.kernel._worker.postMessage(response);
-        // ALLOWED_ORIGINS.forEach((origin: string) => parent.postMessage(data, origin));
+        ALLOWED_ORIGINS.forEach((origin: string) => parent.postMessage(data, origin));
         return;
       default:
         return;
