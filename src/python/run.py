@@ -160,11 +160,12 @@ def error_fragment(error_text):
     root = st.empty()
     with root.container(border=True):
         st.write("🤯 An error occurred while executing the app.")
-        if st.button("Try to fix this error", icon="🛠️", type="primary"):
-            with root.container(border=True):
-                js.postMessage(json.dumps({"type": "bee:reportError", "errorText": error_text}))
-                st.write("🛠️ The error is being fixed...")
-                return
+        if CONFIG.get("can_fix_error"):
+          if st.button("Try to fix this error", icon="🛠️", type="primary"):
+              with root.container(border=True):
+                  js.postMessage(json.dumps({"type": "bee:reportError", "errorText": error_text}))
+                  st.write("🛠️ The error is being fixed...")
+                  return
         st.expander("Error details").code(error_text, language=None)
 
 
