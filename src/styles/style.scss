@@ -720,11 +720,20 @@
     right: 0;
     z-index: 9998;
 
-    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+
+    transition-delay: 0s;
+    transition-duration: 0.2s;
+    transition-property: opacity, pointer-events;
+    transition-behavior: allow-discrete;
   }
 
   #root:has(.stApp[data-test-script-state="running"]) ~ & {
-    visibility: visible;
+    opacity: 1;
+    pointer-events: all;
+
+    transition-delay: 0.5s;
   }
 
   .backdrop {
