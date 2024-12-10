@@ -16,7 +16,7 @@ const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').spl
       entrypoint: 'trigger.py',
       files: {
         'trigger.py': 'import run; await run.run()',
-        'app.py': '',
+        'app.py': 'async def main():\n  pass',
         'config.json': '{}',
         'run.py': runPy,
       },
