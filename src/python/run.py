@@ -105,16 +105,16 @@ def llm_function(creative=False):
                 raise ValueError(
                     "Input too long! Try spliting input into chunks of 200000 characters and processing them separately, then merging the results. You can use _ to define another function for merging partial results."
                 )
-
-            response = await request(
-                "chat_completion",
-                {
-                    "messages": messages,
-                    "temperature": 0.8 if creative else 0.0,
-                    "max_tokens": 4096,
-                    "json_schema": None if return_type is str else json_schema,
-                }
-            )
+            with st.spinner():
+              response = await request(
+                  "chat_completion",
+                  {
+                      "messages": messages,
+                      "temperature": 0.8 if creative else 0.0,
+                      "max_tokens": 4096,
+                      "json_schema": None if return_type is str else json_schema,
+                  }
+              )
 
             if getattr(response, 'error', None):
                 raise LLMFunctionLimitExceededException()
