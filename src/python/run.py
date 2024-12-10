@@ -110,7 +110,7 @@ def llm_function(creative=False):
                 )
 
             response = await request(
-                "/v1/chat/completions",
+                "chat_completion",
                 {
                     "messages": messages,
                     "temperature": 0.8 if creative else 0.0,
@@ -195,7 +195,7 @@ async def translate_modules_to_packages(modules):
     packages = [OVERRIDES[module] for module in modules if module in OVERRIDES.keys()]
     if unknown_modules := [module for module in modules if module not in OVERRIDES.keys()]:
         response = await request(
-            "/modules-to-packages",
+            "modules_to_packages",
             {"modules": unknown_modules},
         )
         if not getattr(response, 'error', None):
