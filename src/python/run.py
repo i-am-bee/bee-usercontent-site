@@ -34,7 +34,7 @@ def _escape_code_block(s):
     return f"{backticks}\n{s}\n{backticks}"
 
 
-class LLMFunctionLimitExceededException(Exception):
+class UnfixableException(Exception):
     pass
 
 
@@ -115,8 +115,8 @@ def llm_function(creative=False):
                 }
             )
 
-            if getattr(response, 'error', None):
-                raise LLMFunctionLimitExceededException()
+            if error := getattr(response, 'error', None):
+                raise UnfixableException(error)
 
             if return_type is str:
                 return response.message
@@ -166,9 +166,8 @@ def error_fragment(error_text):
 
 
 @st.fragment
-def llm_function_rate_limit_exceeded_error_fragment():
-    st.error("You have exceeded the limit for using LLM functions.")
-
+def unfixable_error_fragment(error: UnfixableException):
+    st.error(str(error) or 'Unknown error occurred.')
 
 def identify_modules(source_code: str) -> set[str]:
     imported_packages = set()
@@ -202,7 +201,7 @@ def patch_streamlit():
     # LLM function -- we just pretend it's a part of Streamlit to avoid import shenanigans
     st.llm_function = llm_function
 
-    # Form submit button does not accept a key -- make it accept & ignore it
+    # Form submit button does not accept a key -- make it accept & ignore it
     st_form_submit_button = st.form_submit_button
     st.form_submit_button = lambda *args, **kwargs: st_form_submit_button(*args, **{ k: v for k, v in kwargs.items() if k != "key"})
 
@@ -230,8 +229,8 @@ async def run():
         await asyncio.sleep(0.01)
         patch_streamlit()
         await importlib.import_module("app").main()
-    except LLMFunctionLimitExceededException:
-        llm_function_rate_limit_exceeded_error_fragment()
+    except UnfixableException as error:
+        unfixable_error_fragment(error)
     except Exception as e:
         error_fragment(format_traceback_with_locals(e, skip_frames=4))
 
