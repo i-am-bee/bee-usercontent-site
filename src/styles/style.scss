@@ -714,10 +714,7 @@
 #loading {
   & {
     position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
+    inset: 0;
     z-index: 9998;
 
     opacity: 0;
@@ -738,10 +735,8 @@
 
   .backdrop {
     position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
+    inset: 0.5rem;
+    border-radius: 0.5rem;
     z-index: 9998;
     background: var(--cds-overlay);
   }
