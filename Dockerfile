@@ -13,6 +13,7 @@ ENV HUSKY=0
 
 # Install dependencies based on the preferred package manager
 COPY package.json pnpm-lock.yaml* ./
+COPY patches ./patches
 
 RUN corepack enable pnpm
 RUN pnpm config set store-dir ~/.pnpm-store
