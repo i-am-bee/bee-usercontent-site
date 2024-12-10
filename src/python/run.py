@@ -1,6 +1,5 @@
 import ast
 import asyncio
-import runpy
 import functools
 import importlib
 import inspect
@@ -169,7 +168,6 @@ def error_fragment(error_text):
 @st.fragment
 def llm_function_rate_limit_exceeded_error_fragment():
     st.error("You have exceeded the limit for using LLM functions.")
-    js.postMessage(json.dumps({"type": "bee:reportRateLimitExceededError"}))
 
 
 def identify_modules(source_code: str) -> set[str]:

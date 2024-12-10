@@ -710,3 +710,38 @@
     }
   }
 }
+
+#loading {
+  & {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 9998;
+
+    visibility: hidden;
+  }
+
+  #root:has(.stApp[data-test-script-state="running"]) ~ & {
+    visibility: visible;
+  }
+
+  .backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 9998;
+    background: var(--cds-overlay);
+  }
+
+  .spinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+  }
+}
