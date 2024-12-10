@@ -72,9 +72,6 @@ def llm_function(creative=False):
 
         @functools.wraps(func)
         async def wrapper(*args, **kwargs):
-            if CONFIG.get("llm_function_rate_limited"):
-                raise LLMFunctionLimitExceededException()
-
             if len(args) > len(input_params):
                 raise ValueError("Too many positional arguments.")
 
