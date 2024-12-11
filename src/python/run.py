@@ -137,7 +137,7 @@ def format_traceback_with_locals(exc, skip_frames=0):
             continue
         traceback_segment = traceback.format_tb(tb)[0]
         traceback_string += traceback_segment
-        if traceback_segment.startswith("  File \"app.py\","):
+        if traceback_segment.startswith("  File \"/home/pyodide/app.py\","):
             traceback_string += "  Local variables:\n"
             for k, v in tb.tb_frame.f_locals.items():
                 if k.startswith("__"):
@@ -235,7 +235,7 @@ async def run():
     except UnfixableException as error:
         unfixable_error_fragment(error)
     except Exception as e:
-        error_fragment(format_traceback_with_locals(e, skip_frames=4))
+        error_fragment(format_traceback_with_locals(e, skip_frames=1))
 
 
 __all__ = ["run"]
