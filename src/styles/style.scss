@@ -155,6 +155,20 @@
         @include type-style(heading-01);
       }
 
+      .bee-st-title {
+        .bee-st-title-heading {
+          font-size: rem(32px);
+          font-weight: 600;
+          margin-bottom: $spacing-05;
+        }
+
+        .bee-st-title-description {
+          font-size: rem(16px);
+          line-height: calc(22 / 16);
+          margin-bottom: $spacing-08;
+        }
+      }
+
       ul,
       ol,
       dl,

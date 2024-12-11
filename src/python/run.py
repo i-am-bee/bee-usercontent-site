@@ -213,6 +213,9 @@ def patch_streamlit():
     st_metric = st.metric
     st.metric = lambda *args, **kwargs: st_metric(*args, **{ k: v for k, v in kwargs.items() if k not in ["min_value", "max_value"]})
 
+    # Title -- replace by custom element, allow subtitle
+    st.title = lambda heading, description, **kwargs: st.markdown(f'<div class="bee-st-title"><div class="bee-st-title-heading">{heading}</div><div class="bee-st-title-description">{description}</div></div>', unsafe_allow_html=True)
+
 
 async def run():
     try:
