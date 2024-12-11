@@ -33,25 +33,15 @@ server {
             'unsafe-eval'
             'unsafe-inline'
             blob:
-            https://cdn.jsdelivr.net/pyodide/
-            https://cdn.jsdelivr.net/npm/@stlite/;
+            https://cdn.jsdelivr.net/pyodide/;
         style-src
             'self'
-            'unsafe-inline'
-            https://cdn.jsdelivr.net/npm/@stlite/;
+            'unsafe-inline';
         img-src
             'self'
             data:;
-        font-src
-            'self'
-            https://cdn.jsdelivr.net/npm/@stlite/;
-        connect-src
-            'self'
-            http://localhost:8000/v1/chat/completions
-            https://cdn.jsdelivr.net/npm/@stlite/
-            https://cdn.jsdelivr.net/pyodide/
-            https://pypi.org/simple/
-            https://files.pythonhosted.org/packages/;
+        font-src 'self';
+        connect-src *;
         object-src 'none';
         base-uri 'none';
         frame-ancestors ${ALLOWED_FRAME_ANCESTORS};
