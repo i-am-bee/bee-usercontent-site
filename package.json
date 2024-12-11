@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "lint": "pnpm lint:js",
     "lint:js": "eslint src/.",
-    "lint:css": "stylelint src/styles/**/*.scss"
+    "lint:css": "stylelint src/styles/**/*.scss",
+    "release": "release-it"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^8.17.0",
@@ -35,7 +36,9 @@
     "@carbon/styles": "^1.68.0",
     "@carbon/themes": "^11.43.0",
     "@carbon/type": "^11.33.0",
+    "@release-it/conventional-changelog": "^9.0.3",
     "@stlite/mountable": "^0.73.1",
+    "release-it": "^17.10.0",
     "sass": "^1.81.0"
   },
   "packageManager": "pnpm@9.5.0+sha512.140036830124618d624a2187b50d04289d5a087f326c9edfc0ccd733d76c4f52c3a313d4fc148794a2a9d81553016004e6742e8cf850670268a7387fc220c903",
