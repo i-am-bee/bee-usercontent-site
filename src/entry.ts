@@ -5,7 +5,7 @@ declare global {
 }
 
 // Page is loaded directly
-if (window === window.parent) window.location.href = 'https://ibm.com';
+if (!import.meta.env.VITE_DEBUG && window === window.parent) window.location.href = 'https://iambee.ai/';
 
 const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').split(' ').filter(Boolean);
 
@@ -16,7 +16,9 @@ const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').spl
       entrypoint: 'trigger.py',
       files: {
         'trigger.py': 'import run; await run.run()',
-        'app.py': 'async def main():\n  pass',
+        'app.py': import.meta.env.VITE_DEBUG
+          ? 'import streamlit as st\nasync def main():\n  st.write("APP LOADED!")'
+          : 'async def main():\n  pass',
         'config.json': '{}',
         'run.py': runPy,
       },

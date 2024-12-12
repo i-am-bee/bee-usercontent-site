@@ -8,12 +8,13 @@ server {
 
   error_page 500 502 503 504 /50x.html;
 
+  etag on;
+
   gzip on;
   gzip_disable "msie6";
   gzip_vary on;
   gzip_min_length 1000;
-  gzip_types text/plain text/html text/css application/javascript application/json;
-
+  gzip_types text/plain text/html text/css application/javascript application/json application/wasm;
 
   # SPA routing, everything falls back to the root index.html
   location / {
@@ -48,6 +49,8 @@ server {
         form-action 'self';
         upgrade-insecure-requests;
     " always;
+
+    if_modified_since before;
   }
 
   # Serve assets with immutable cache
