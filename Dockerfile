@@ -40,7 +40,8 @@ FROM nginx:stable-alpine AS runner
 ARG ALLOWED_FRAME_ANCESTORS
 ENV ALLOWED_FRAME_ANCESTORS=${ALLOWED_FRAME_ANCESTORS}
 
-COPY --from=builder /app/nginx /etc/nginx/templates
+COPY --from=builder /app/nginx/nginx.conf /etc/nginx/
+COPY --from=builder /app/nginx/default.conf.template /etc/nginx/templates/
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 EXPOSE 80
