@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.0.3](https://github.com/i-am-bee/bee-usercontent-site/compare/v0.0.2...v0.0.3) (2024-12-12)
+
+### Bug Fixes
+
+* caching ([#21](https://github.com/i-am-bee/bee-usercontent-site/issues/21)) ([20dd44a](https://github.com/i-am-bee/bee-usercontent-site/commit/20dd44a5add0af85b8769da78041ec5510c61c18))
+
 ## 0.0.2 (2024-12-11)
 
 ### Features
