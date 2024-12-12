@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.0.7](https://github.com/i-am-bee/bee-usercontent-site/compare/v0.0.6...v0.0.7) (2024-12-12)
+
+### Features
+
+* improve loading speed ([#23](https://github.com/i-am-bee/bee-usercontent-site/issues/23)) ([64e11c1](https://github.com/i-am-bee/bee-usercontent-site/commit/64e11c17a5a4c3c36381468f1842bc8b1c4d5290))
+
+### Bug Fixes
+
+* fix nginx conf ([#24](https://github.com/i-am-bee/bee-usercontent-site/issues/24)) ([c481465](https://github.com/i-am-bee/bee-usercontent-site/commit/c481465d6c094912cb431732a5926f45575bee4f))
+
 ## [0.0.6](https://github.com/i-am-bee/bee-usercontent-site/compare/v0.0.5...v0.0.6) (2024-12-12)
 
 ## [0.0.5](https://github.com/i-am-bee/bee-usercontent-site/compare/v0.0.4...v0.0.5) (2024-12-12)
