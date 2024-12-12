@@ -51,7 +51,7 @@ server {
   }
 
   # Serve assets with immutable cache
-  location /assets/ {
+  location ~ ^/(assets|lib|fonts)/ {
     try_files $uri =404;
     add_header Cache-Control "public, max-age=31536000, immutable";
   }
