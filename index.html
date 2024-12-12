@@ -10,7 +10,14 @@
     <title>Bee Artifact Content</title>
     <link rel="preload" href="/fonts/IBMPlexSans-Regular.woff2" as="font" crossorigin type="font/woff2">
     <link rel="preload" href="/fonts/IBMPlexSans-SemiBold.woff2" as="font" crossorigin type="font/woff2">
-    <link rel="stylesheet" href="/<%= stlitePath %>/stlite.css" />
+    <% preloadItems.forEach(item => { %>
+      <% if(item.contentType === "application/vnd.pypi.simple.v1+json") { %>
+        <script>fetch("<%= item.url %>", { headers: { "Accept": "<%= item.contentType %>, */*;q=0.01", "Accept-Encoding": null } })</script>
+      <% } else { %>
+        <link rel="preload" href="<%= item.url %>" as="fetch" type="<%= item.contentType %>" crossorigin>
+      <% } %>
+    <% }); %>
+
     <link rel="stylesheet" href="src/styles/style.scss" />
   </head>
 
