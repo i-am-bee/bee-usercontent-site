@@ -44,4 +44,6 @@ COPY --from=builder /app/nginx/nginx.conf /etc/nginx/
 COPY --from=builder /app/nginx/default.conf.template /etc/nginx/templates/
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-EXPOSE 80
+RUN chmod -R u+wx /etc/nginx/conf.d
+
+EXPOSE 8080
