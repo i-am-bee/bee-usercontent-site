@@ -5,7 +5,7 @@ declare global {
 }
 
 // Page is loaded directly
-if (!import.meta.env.VITE_DEBUG && window === window.parent) window.location.href = 'https://ibm.com';
+if (!import.meta.env.VITE_DEBUG && window === window.parent) window.location.href = 'https://iambee.ai/';
 
 const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').split(' ').filter(Boolean);
 
