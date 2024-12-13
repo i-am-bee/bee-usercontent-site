@@ -159,13 +159,13 @@
         .bee-st-title-heading {
           font-size: rem(32px);
           font-weight: 600;
-          margin-bottom: $spacing-05;
+          margin-block-end: $spacing-05;
         }
 
         .bee-st-title-description {
           font-size: rem(16px);
           line-height: calc(22 / 16);
-          margin-bottom: $spacing-08;
+          margin-block-end: $spacing-08;
         }
       }
 
@@ -740,7 +740,7 @@
     transition-behavior: allow-discrete;
   }
 
-  #root:has(.stApp[data-test-script-state="running"]) ~ & {
+  #root:has(.stApp[data-test-script-state='running']) ~ & {
     opacity: 1;
     pointer-events: all;
 
@@ -757,8 +757,8 @@
 
   .spinner {
     position: absolute;
-    left: 50%;
-    top: 50%;
+    inset-inline-start: 50%;
+    inset-block-start: 50%;
     transform: translate(-50%, -50%);
     z-index: 9999;
   }
