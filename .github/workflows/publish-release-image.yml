@@ -32,7 +32,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           build-args: |
-            VITE_ALLOWED_FRAME_ANCESTORS=http://localhost:3000
+            ALLOWED_FRAME_ANCESTORS=http://localhost:3000
           tags: |
             ${{ vars.DOCKER_REGISTRY }}/i-am-bee/bee-usercontent-site-local:latest
             ${{ vars.DOCKER_REGISTRY }}/i-am-bee/bee-usercontent-site-local:${{ steps.get_version.outputs.VERSION }}
