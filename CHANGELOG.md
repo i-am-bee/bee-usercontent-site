@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.0.9](https://github.com/i-am-bee/bee-usercontent-site/compare/v0.0.8...v0.0.9) (2024-12-13)
+
+### Features
+
+* **ci:** add publish release image workflow ([#19](https://github.com/i-am-bee/bee-usercontent-site/issues/19)) ([7889149](https://github.com/i-am-bee/bee-usercontent-site/commit/7889149ef6bef2eb252db9f4f68de77c0cf79b9c))
+
+### Bug Fixes
+
+* allow blob URLs ([#28](https://github.com/i-am-bee/bee-usercontent-site/issues/28)) ([03fa6e2](https://github.com/i-am-bee/bee-usercontent-site/commit/03fa6e2c1604070f30f3afcf52492fc3bade9b0e))
+* css logical rules ([62c7539](https://github.com/i-am-bee/bee-usercontent-site/commit/62c75397bf423915edd2938c4c681d1a28f483ec))
+
 ## [0.0.8](https://github.com/i-am-bee/bee-usercontent-site/compare/v0.0.7...v0.0.8) (2024-12-13)
 
 ### Bug Fixes
