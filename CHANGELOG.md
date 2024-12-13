@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.0.10](https://github.com/i-am-bee/bee-usercontent-site/compare/v0.0.9...v0.0.10) (2024-12-13)
+
+### Bug Fixes
+
+* **ci:** use correct allow frame ancestors env in local build ([#29](https://github.com/i-am-bee/bee-usercontent-site/issues/29)) ([8e0412f](https://github.com/i-am-bee/bee-usercontent-site/commit/8e0412f94d33ad96fd86cc95232f31f93e31e8d3))
+
 ## [0.0.9](https://github.com/i-am-bee/bee-usercontent-site/compare/v0.0.8...v0.0.9) (2024-12-13)
 
 ### Features
