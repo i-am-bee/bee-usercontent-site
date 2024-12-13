@@ -39,7 +39,8 @@ server {
             'unsafe-inline';
         img-src
             'self'
-            data:;
+            data:
+            blob:;
         font-src 'self';
         connect-src *;
         object-src 'none';
