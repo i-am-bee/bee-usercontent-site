@@ -10,6 +10,8 @@ if (!import.meta.env.VITE_DEBUG && window === window.parent) window.location.hre
 const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').split(' ').filter(Boolean);
 
 (() => {
+  let loadedData = '';
+
   const app = stlite.mount(
     {
       requirements: ['requests', 'pydantic'],
@@ -55,9 +57,12 @@ const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').spl
 
         return;
       case 'bee:updateCode':
+        const newLoadedData = JSON.stringify({ code: data.code, config: data.config })
+        if (loadedData === newLoadedData) return;
         await app.writeFile('app.py', data.code);
         await app.writeFile('config.json', JSON.stringify(data.config ?? {}));
         await app.writeFile('trigger.py', 'import run; await run.run(); # ' + Math.random());
+        loadedData = newLoadedData;
 
         return;
       case 'bee:response':
