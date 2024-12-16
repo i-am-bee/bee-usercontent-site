@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.0.11](https://github.com/i-am-bee/bee-usercontent-site/compare/v0.0.10...v0.0.11) (2024-12-16)
+
+### Bug Fixes
+
+* skip reload on unchanged code ([#30](https://github.com/i-am-bee/bee-usercontent-site/issues/30)) ([7fb6729](https://github.com/i-am-bee/bee-usercontent-site/commit/7fb6729b4eba7d2d008b94008bd8f0a143f3ed1e))
+
 ## [0.0.10](https://github.com/i-am-bee/bee-usercontent-site/compare/v0.0.9...v0.0.10) (2024-12-13)
 
 ### Bug Fixes
