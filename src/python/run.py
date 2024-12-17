@@ -153,25 +153,26 @@ def format_traceback_with_locals(exc, skip_frames=0):
 
 @st.fragment
 def error_fragment(error_text):
-    root = st.empty()
-    with root.container(border=True):
-        st.write("🤯 An error occurred while executing the app.")
-        if CONFIG.get("can_fix_error"):
-          if st.button("Try to fix this error", icon="🛠️", type="primary"):
-              with root.container(border=True):
-                  js.postMessage(json.dumps({"type": "bee:reportError", "errorText": error_text}))
-                  st.write("🛠️ The error is being fixed...")
-                  return
-        st.expander("Error details").code(error_text, language=None)
+    with st.container(border=True):
+        if st.session_state.get("_bee_fixing_error"):
+            st.write("🛠️ The error is being fixed...")
+        else:
+            st.write("🤯 An error occurred while executing the app.")
+            if CONFIG.get("can_fix_error"):
+                if st.button("Try to fix this error", icon="🛠️", type="primary"):
+                    js.postMessage(json.dumps({"type": "bee:reportError", "errorText": error_text}))
+                    st.session_state._bee_fixing_error = True
+                    st.rerun(scope="fragment")
+            st.expander("Error details").code(error_text, language=None)
 
 
 @st.fragment
 def unfixable_error_fragment(error: UnfixableException):
     st.error(str(error) or 'Unknown error occurred.')
 
-def identify_modules(source_code: str) -> set[str]:
+def identify_modules(code: str) -> set[str]:
     imported_packages = set()
-    for node in ast.walk(ast.parse(source_code)):
+    for node in ast.walk(ast.parse(code)):
         if isinstance(node, ast.Import):
             for alias in node.names:
                 imported_packages.add(alias.name.split('.')[0])
@@ -219,16 +220,20 @@ def patch_streamlit():
 
 async def run():
     try:
-        source = pathlib.Path("app.py").read_text()
-        imported_modules = identify_modules(source)
-        available_modules = sys.modules.keys()
-        needed_modules = list(imported_modules - available_modules)
-        if needed_modules:
-            packages = await translate_modules_to_packages(needed_modules)
-            await asyncio.gather(
-                *(micropip.install(package) for package in packages),
-                return_exceptions=True,
-            )
+        code = pathlib.Path("app.py").read_text()
+        if st.session_state.get("_bee_last_code") != code:
+            imported_modules = identify_modules(code)
+            available_modules = sys.modules.keys()
+            needed_modules = list(imported_modules - available_modules)
+            if needed_modules:
+                packages = await translate_modules_to_packages(needed_modules)
+                await asyncio.gather(
+                    *(micropip.install(package) for package in packages),
+                    return_exceptions=True,
+                )
+            st.session_state._bee_last_code = code
+            st.session_state._bee_fixing_error = False
+
         await asyncio.sleep(0.01)
         patch_streamlit()
         await importlib.import_module("app").main()
