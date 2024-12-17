@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.12](https://github.com/i-am-bee/bee-usercontent-site/compare/v0.0.11...v0.0.12) (2024-12-17)
+
+### Bug Fixes
+
+* dark theme ([#32](https://github.com/i-am-bee/bee-usercontent-site/issues/32)) ([0f5df2b](https://github.com/i-am-bee/bee-usercontent-site/commit/0f5df2bf541d200108eb38d2a18da872fe7d55b8))
+* fix error fragment ([#31](https://github.com/i-am-bee/bee-usercontent-site/issues/31)) ([04106fd](https://github.com/i-am-bee/bee-usercontent-site/commit/04106fd7bfb0f97ace88f4e0c556f20d6eb7d849))
+
 ## [0.0.11](https://github.com/i-am-bee/bee-usercontent-site/compare/v0.0.10...v0.0.11) (2024-12-16)
 
 ### Bug Fixes
