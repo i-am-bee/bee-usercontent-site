@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.0.13](https://github.com/i-am-bee/bee-usercontent-site/compare/v0.0.12...v0.0.13) (2024-12-17)
+
+### Bug Fixes
+
+* minor styling issues ([#33](https://github.com/i-am-bee/bee-usercontent-site/issues/33)) ([09aa338](https://github.com/i-am-bee/bee-usercontent-site/commit/09aa33871ae324f75212466bf92a3a7aa002c705))
+
 ## [0.0.12](https://github.com/i-am-bee/bee-usercontent-site/compare/v0.0.11...v0.0.12) (2024-12-17)
 
 ### Bug Fixes
