@@ -38,7 +38,7 @@ server {
             'self'
             'unsafe-inline';
         img-src
-            'self'
+            *
             data:
             blob:;
         font-src 'self';
