@@ -217,6 +217,19 @@ def patch_streamlit():
     # Title -- replace by custom element, allow subtitle
     st.title = lambda heading, description, **kwargs: st.markdown(f'<div class="bee-st-title"><div class="bee-st-title-heading">{heading}</div><div class="bee-st-title-description">{description}</div></div>', unsafe_allow_html=True)
 
+    def fix_markdown(body):
+        body = re.sub(r"^•", "*", body, flags=re.MULTILINE) # Replace Unicode bullet points
+        body = re.sub(r"^(#+ .+\n)[=-]+$", r"\1", body, flags=re.MULTILINE) # Replace combined (# and underline) headings
+        return body
+
+    # Markdown -- fix wrongly generated formatting
+    st_markdown = st.markdown
+    st.markdown = lambda body, *args, **kwargs: st_markdown(fix_markdown(body), *args, **kwargs)
+
+    # Write -- fix wrongly generated formatting, but only for strings
+    st_write = st.write
+    st.write = lambda *args, **kwargs: st_write(*(fix_markdown(arg) if type(arg) is str else arg for arg in args), **kwargs)
+
 
 async def run():
     try:
