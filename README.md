@@ -27,7 +27,7 @@ Open [http://localhost:5173](http://localhost:5173) with your browser to see the
 ## Preloaded URLs
 
 To update the list of preloaded URLs in `preload.json`:
-1. Manually replace `preload.json` content with `{"urls":[]}`
+1. Manually replace `preload.json` content with `{"items":[]}`
 2. Start `VITE_DEBUG=true pnpm start:dev` in one terminal
 3. In a different terminal, run `node scripts/preload.mjs http://localhost:5173/`
 
