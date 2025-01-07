@@ -232,6 +232,7 @@ def patch_streamlit():
 
 
 async def run():
+    js.postMessage(json.dumps({ "type": "bee:ready" }))
     try:
         code = pathlib.Path("app.py").read_text()
         if st.session_state.get("_bee_last_code") != code:

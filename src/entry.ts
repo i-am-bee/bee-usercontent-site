@@ -85,9 +85,14 @@ const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').spl
     app.kernel._worker.addEventListener('message', (event: MessageEvent) => {
       const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
       switch (data.type) {
+        case 'bee:ready':
+          ALLOWED_ORIGINS.forEach((origin: string) => parent.postMessage({ type: 'bee:ready' }, origin))
+          return;
+
         case 'bee:request':
           ALLOWED_ORIGINS.forEach((origin: string) => parent.postMessage(data, origin));
           return;
+
         default:
           return;
       }
