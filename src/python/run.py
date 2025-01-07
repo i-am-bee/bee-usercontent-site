@@ -158,7 +158,7 @@ def error_fragment(error_text):
             st.write("🛠️ The error is being fixed...")
         else:
             st.write("🤯 An error occurred while executing the app.")
-            if CONFIG.get("can_fix_error"):
+            if CONFIG.get("canFixError"):
                 if st.button("Try to fix this error", icon="🛠️", type="primary"):
                     request("fix_error", { "errorText": error_text })
                     st.session_state._bee_fixing_error = True

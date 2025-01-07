@@ -4,14 +4,30 @@ declare global {
   const stlite: any;
 }
 
+interface State {
+  code: string,
+  config: {
+    canFixError: boolean
+  },
+  theme: 'light' | 'dark',
+  fullscreen: boolean,
+}
+
 // Page is loaded directly
 if (!import.meta.env.VITE_DEBUG && window === window.parent) window.location.href = 'https://iambee.ai/';
 
 const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').split(' ').filter(Boolean);
 
 (() => {
-  let state = { code: 'async def main():\n  pass', config: {} };
-  let currentTheme = 'light';
+  let state: AppState = {
+    code: import.meta.env.VITE_DEBUG ? 'import streamlit as st\nasync def main():\n  st.write("APP LOADED!")': 'async def main():\n  pass',
+    config: {
+      canFixError: false
+    },
+    theme: 'light',
+    fullscreen: false,
+  };
+
   let app: any;
 
   function mountApp(theme: 'light' | 'dark' = 'light') {
@@ -21,9 +37,7 @@ const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').spl
         entrypoint: 'trigger.py',
         files: {
           'trigger.py': 'import run; await run.run()',
-          'app.py': import.meta.env.VITE_DEBUG
-            ? 'import streamlit as st\nasync def main():\n  st.write("APP LOADED!")'
-            : state.code,
+          'app.py': state.code,
           'config.json': JSON.stringify(state.config),
           'run.py': runPy,
         },
@@ -75,35 +89,39 @@ const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').spl
       return;
     }
 
-    const { classList } = document.body;
-
     switch (data.type) {
       case 'bee:setFullscreen':
-        classList.toggle('fullscreen', data.value);
-
+        state.fullscreen = data.value;
+        document.body.classList.toggle('fullscreen', state.fullscreen);
         return;
+
       case 'bee:updateTheme':
-        classList.remove(data.theme === 'light' ? 'cds--g90' : 'cds--white');
-        classList.add(data.theme === 'light' ? 'cds--white' : 'cds--g90');
-        if(data.theme !== currentTheme) {
-          currentTheme = data.theme;
+        document.body.classList.remove(data.theme === 'light' ? 'cds--g90' : 'cds--white');
+        document.body.classList.add(data.theme === 'light' ? 'cds--white' : 'cds--g90');
+        if(data.theme !== state.theme) {
+          state.theme = data.theme;
           app?.unmount();
           mountApp(data.theme);
         }
-
         return;
+
       case 'bee:updateCode':
-        const newState = { code: data.code, config: data.config }
+        const newState = { ...state, code: data.code, config: data.config }
         if (JSON.stringify(state) === JSON.stringify(newState)) return;
         await app.writeFile('app.py', data.code);
         await app.writeFile('config.json', JSON.stringify(data.config ?? {}));
         await app.writeFile('trigger.py', 'import run; await run.run(); # ' + Math.random());
         state = newState;
-
         return;
+
       case 'bee:response':
         app.kernel._worker.postMessage(data);
         return;
+
+      case 'bee:updateState':
+        updateState(data.stateChange);
+        return;
+
       default:
         return;
     }
