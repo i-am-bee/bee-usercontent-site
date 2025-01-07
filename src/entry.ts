@@ -4,13 +4,13 @@ declare global {
   const stlite: any;
 }
 
-interface State {
+interface AppState {
+  fullscreen: boolean,
+  theme: 'light' | 'dark' | 'system',
   code: string,
   config: {
     canFixError: boolean
   },
-  theme: 'light' | 'dark',
-  fullscreen: boolean,
 }
 
 // Page is loaded directly
@@ -30,7 +30,30 @@ const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').spl
 
   let app: any;
 
-  function mountApp(theme: 'light' | 'dark' = 'light') {
+  async function updateState(stateChange: Partial<AppState>) {
+    const oldState = { ...state };
+    state = { ...state, ...stateChange };
+
+    // set fullscreen
+    document.body.classList.toggle('fullscreen', state.fullscreen);
+
+    // change theme
+    if(oldState.theme !== state.theme) {
+      document.body.classList.toggle('cds--g90', state.theme === 'dark');
+      document.body.classList.toggle('cds--white', state.theme === 'light');
+      app?.unmount();
+      mountApp();
+    }
+
+    // update code & config
+    if (oldState.code !== state.code || JSON.stringify(oldState.config) !== JSON.stringify(state.config)) {
+      await app.writeFile('app.py', state.code);
+      await app.writeFile('config.json', JSON.stringify(state.config));
+      await app.writeFile('trigger.py', 'import run; await run.run(); # ' + Math.random());
+    }
+  }
+
+  function mountApp() {
     app = stlite.mount(
       {
         requirements: ['pydantic'],
@@ -45,7 +68,7 @@ const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').spl
           'client.toolbarMode': 'minimal',
           'server.runOnSave': true,
           'theme.primaryColor': '#0f62fe',
-          ...(theme === 'light' ? {
+          ...(state.theme === 'light' ? {
             'theme.base': 'light',
             'theme.backgroundColor': '#ffffff',
             'theme.secondaryBackgroundColor': '#ffffff',
@@ -62,11 +85,6 @@ const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').spl
     app.kernel._worker.addEventListener('message', (event: MessageEvent) => {
       const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
       switch (data.type) {
-        case 'bee:reportError':
-          ALLOWED_ORIGINS.forEach((origin: string) =>
-            parent.postMessage({ type: data.type, errorText: data?.errorText }, origin),
-          );
-          return;
         case 'bee:request':
           ALLOWED_ORIGINS.forEach((origin: string) => parent.postMessage(data, origin));
           return;
@@ -91,27 +109,15 @@ const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').spl
 
     switch (data.type) {
       case 'bee:setFullscreen':
-        state.fullscreen = data.value;
-        document.body.classList.toggle('fullscreen', state.fullscreen);
+        updateState({ fullscreen: data.value });
         return;
 
       case 'bee:updateTheme':
-        document.body.classList.remove(data.theme === 'light' ? 'cds--g90' : 'cds--white');
-        document.body.classList.add(data.theme === 'light' ? 'cds--white' : 'cds--g90');
-        if(data.theme !== state.theme) {
-          state.theme = data.theme;
-          app?.unmount();
-          mountApp(data.theme);
-        }
+        updateState({ theme: data.theme });
         return;
 
       case 'bee:updateCode':
-        const newState = { ...state, code: data.code, config: data.config }
-        if (JSON.stringify(state) === JSON.stringify(newState)) return;
-        await app.writeFile('app.py', data.code);
-        await app.writeFile('config.json', JSON.stringify(data.config ?? {}));
-        await app.writeFile('trigger.py', 'import run; await run.run(); # ' + Math.random());
-        state = newState;
+        updateState({ code: data.code, config: data.config })
         return;
 
       case 'bee:response':
