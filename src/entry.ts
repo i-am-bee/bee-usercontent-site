@@ -11,6 +11,7 @@ interface AppState {
   config: {
     canFixError: boolean
   },
+  ancestorOrigin: string,
 }
 
 // Page is loaded directly
@@ -26,12 +27,18 @@ const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').spl
     },
     theme: 'light',
     fullscreen: false,
+    ancestorOrigin: ALLOWED_ORIGINS[0],
   };
 
   let app: any;
 
   async function updateState(stateChange: Partial<AppState>) {
     const oldState = { ...state };
+
+    // validate ancestorOrigin
+    if(!ALLOWED_ORIGINS.includes(stateChange.ancestorOrigin)) stateChange.ancestorOrigin = undefined;
+
+    // update state
     state = { ...state, ...stateChange };
 
     // set fullscreen
@@ -86,11 +93,11 @@ const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').spl
       const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
       switch (data.type) {
         case 'bee:ready':
-          ALLOWED_ORIGINS.forEach((origin: string) => parent.postMessage({ type: 'bee:ready' }, origin))
+          parent.postMessage({ type: 'bee:ready' }, state.ancestorOrigin);
           return;
 
         case 'bee:request':
-          ALLOWED_ORIGINS.forEach((origin: string) => parent.postMessage(data, origin));
+          parent.postMessage(data, state.ancestorOrigin);
           return;
 
         default:
