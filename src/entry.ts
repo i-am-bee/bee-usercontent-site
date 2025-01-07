@@ -108,18 +108,6 @@ const ALLOWED_ORIGINS = (import.meta.env.VITE_ALLOWED_FRAME_ANCESTORS ?? '').spl
     }
 
     switch (data.type) {
-      case 'bee:setFullscreen':
-        updateState({ fullscreen: data.value });
-        return;
-
-      case 'bee:updateTheme':
-        updateState({ theme: data.theme });
-        return;
-
-      case 'bee:updateCode':
-        updateState({ code: data.code, config: data.config })
-        return;
-
       case 'bee:response':
         app.kernel._worker.postMessage(data);
         return;
