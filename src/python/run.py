@@ -158,9 +158,9 @@ def error_fragment(error_text):
             st.write("🛠️ The error is being fixed...")
         else:
             st.write("🤯 An error occurred while executing the app.")
-            if CONFIG.get("can_fix_error"):
+            if CONFIG.get("canFixError"):
                 if st.button("Try to fix this error", icon="🛠️", type="primary"):
-                    js.postMessage(json.dumps({"type": "bee:reportError", "errorText": error_text}))
+                    request("fix_error", { "errorText": error_text })
                     st.session_state._bee_fixing_error = True
                     st.rerun(scope="fragment")
             st.expander("Error details").code(error_text, language=None)
@@ -232,6 +232,7 @@ def patch_streamlit():
 
 
 async def run():
+    js.postMessage(json.dumps({ "type": "bee:ready" }))
     try:
         code = pathlib.Path("app.py").read_text()
         if st.session_state.get("_bee_last_code") != code:
