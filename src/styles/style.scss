@@ -81,8 +81,8 @@
       max-inline-size: 100%;
       max-block-size: 100%;
       @media (max-width: 768px) {
-        inset: $spacing-03;
-        inline-size: auto;
+        position: static;
+        inset: auto;
       }
     }
 
