@@ -299,7 +299,9 @@
         }
       }
       button[kind='primary'],
-      button[kind='primaryFormSubmit'] {
+      button[kind='primaryFormSubmit'],
+      button[kind='secondary'],
+      button[kind='secondaryFormSubmit'] {
         background-color: $button-primary;
         &,
         &:hover,
@@ -313,21 +315,21 @@
           background-color: $button-primary-active;
         }
       }
-      button[kind='secondary'],
-      button[kind='secondaryFormSubmit'] {
-        background-color: $button-secondary;
-        &,
-        &:hover,
-        &:active {
-          color: $button-secondary-color;
-        }
-        &:hover {
-          background-color: $button-secondary-hover;
-        }
-        &:active {
-          background-color: $button-secondary-active;
-        }
-      }
+      // button[kind='secondary'],
+      // button[kind='secondaryFormSubmit'] {
+      //   background-color: $button-secondary;
+      //   &,
+      //   &:hover,
+      //   &:active {
+      //     color: $button-secondary-color;
+      //   }
+      //   &:hover {
+      //     background-color: $button-secondary-hover;
+      //   }
+      //   &:active {
+      //     background-color: $button-secondary-active;
+      //   }
+      // }
       button:disabled {
         &,
         &:hover,
