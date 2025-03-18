@@ -1,3 +1,7 @@
+> [!WARNING]  
+> 
+> This repository has been archived and is no longer actively maintained or updated. It is provided here for historical reference and may contain outdated or unsupported code. Users are encouraged to fork or adapt the contents as needed, but please note that no further updates, bug fixes, or security patches will be applied by the original maintainers.
+
 This is simple site for running Streamlit apps created in [bee-ui](https://github.com/i-am-bee/bee-ui) using [Stlite](https://github.com/whitphx/stlite).
 
 ## Getting Started
